@@ -1,0 +1,419 @@
+#include "allvars.h"
+
+/*************************************************************************
+ NAME:       conf2dump
+ FUNCTION:   Convert data file text in plain text 
+ INPUTS:     Filename of parameter file 
+ RETURN:     0
+**************************************************************************/ 
+  
+int conf2dump( char filename[] ){
+    char cmd[100];
+    sprintf( cmd, 
+    "grep -v \"#\" %s | grep -v \"^$\" | awk -F\"=\" '{print $2}' > %s.dump", 
+	filename, filename );
+    system( cmd );
+
+    return 0;
+}
+
+/*************************************************************************
+ NAME:       read_parameters
+ FUNCTION:   Read parameter file and saves the information in param array
+ INPUTS:     Parameter array 
+ 			 Filename of parameter file 
+ RETURN:     0
+**************************************************************************/ 
+
+int read_parameters( float parameters[], char filename[] ) {
+
+    char cmd[100], filenamedump[100];
+    int i=0;
+    FILE *file;
+
+    //Load of File
+    file = fopen( filename, "r" );
+    if( file==NULL ){
+		printf( "  * The file '%s' don't exist!\n", filename );
+		exit(0);
+		}
+    fclose(file);
+    
+    //Converting to plain text
+    conf2dump( filename );
+    sprintf( filenamedump, "%s.dump", filename );
+    file = fopen( filenamedump, "r" );
+    
+    //Reading
+    while( getc( file ) != EOF ){
+	fscanf( file, "%f", &parameters[i] );
+	i++;}
+    
+    fclose( file );
+    
+    //printf( "  * The file '%s' has been loaded!\n", filename );
+
+    sprintf( cmd, "rm -rf %s.dump", filename );
+    system( cmd );
+    
+    return 0;
+}
+
+/*************************************************************************
+ NAME:       read_binary
+ FUNCTION:   Read a Gadget binary snapshot 
+ INPUTS:     Filename of parameter file 
+ 			 Parameter array 
+ RETURN:     0
+**************************************************************************/ 
+
+int read_binary( char *filename ){
+
+	FILE *file = NULL;
+	int i, j;
+	int N_tot, N_min, N_max, dummy, nread=0;
+	float Maux, faux[3];
+	double dumb;
+	unsigned int uintaux;
+	
+	//Load of File
+	if(!(file = fopen( filename, "r" ))){
+	  printf("can't open file `%s`\n", filename);
+	  exit(0);
+	}
+
+	//printf( "\n\n***********************************************************************\n" ); 
+	//printf("Reading snapshot %s\n", filename );	
+
+	nread = fread( &dummy, sizeof(dummy), 1, file );
+	nread = fread( &header, sizeof( struct gadget_header ), 1, file );
+	nread = fread( &dummy, sizeof(dummy), 1, file );
+
+	N_tot = 0;
+	
+	N_tot = header.npartTotal[1];
+	printf("Type %d particles have Npart=%12d NpartTotal=%12d with mass %16.8lf\n", 1,
+	    	    header.npart[1], header.npartTotal[1], header.mass[1]);
+
+	PRM.Npart = N_tot;
+
+	printf(" * Redshift... %16.8f\n",header.redshift);
+	printf(" * Boxsize... %16.8f\n",header.BoxSize);
+	printf(" * Omega0... %16.8f\n",header.Omega0);
+	printf(" * OmageLa... %16.8f\n",header.OmegaLambda);
+	printf(" * Hubbleparam... %16.8f\n",header.HubbleParam);
+	
+	PRM.Lbox = header.BoxSize;
+      
+		// Memory allocation for part variable
+	parts = (struct Particle *) calloc( (size_t) N_tot,sizeof(struct Particle ) );
+
+	if(parts == NULL){
+	   printf("Structure particles could not be allocated\n");
+	   exit(0);
+	}
+			// Positions 
+	nread = fread( &dummy, sizeof(dummy), 1, file );
+
+	for( i=0; i<N_tot; i++ ){
+
+		nread = fread( &faux[0], sizeof(float), 3, file );
+		parts[i].xp = faux[0];
+		parts[i].yp = faux[1];
+		parts[i].zp = faux[2];
+	}
+
+	nread = fread( &dummy, sizeof(dummy), 1, file );
+
+	if( dummy != (3*N_tot*sizeof(float)) ){
+	printf(" Can not read properly ids %d %lu\n",dummy,3*N_tot*sizeof(float));
+	exit(0);
+	}
+				// Velocities 
+
+	nread = fread( &dummy,sizeof(dummy),1,file );
+
+	for( i=0; i<N_tot; i++ ){
+
+	nread = fread( &faux[0],sizeof(float),3,file );
+	dumb = faux[0];
+	dumb = faux[1];
+	dumb = faux[2];
+	}
+
+	nread = fread( &dummy, sizeof(dummy), 1, file );
+
+	if(dummy != (3*N_tot*sizeof(float))){
+		printf(" Can not read properly ids %d %lu\n", dummy, 3*N_tot*sizeof(float));
+		exit(0);
+	}
+
+			// ID's 
+
+	nread = fread(&dummy, sizeof(dummy), 1, file);
+
+	for(i=0; i<N_tot; i++){
+		nread=fread(&uintaux, sizeof(unsigned int), 1, file);
+		dumb = uintaux;
+	}
+
+	nread = fread( &dummy, sizeof(dummy), 1, file );
+
+	if(dummy != (N_tot*sizeof(unsigned int))){
+		printf(" Can not read properly ids %d %lu\n", dummy, N_tot*sizeof(unsigned int));
+		exit(0);
+	}
+
+			// Masses 
+
+	nread = fread( &dummy, sizeof(dummy),1,file );
+
+	N_min = N_max=0;
+
+	for(j=0; j<=5; j++){
+
+		N_max = N_max+header.npartTotal[j];
+
+		if( (header.mass[j]==0) && (header.npartTotal[j]!=0)){
+	  		for(i=N_min;i<N_max;i++){
+				nread=fread(&Maux,sizeof(float),1,file);
+			parts[i].mp = Maux;
+	  		}
+		}
+		if((header.mass[j]!=0) && (header.npartTotal[j]!=0)){
+		  for(i=N_min;i<N_max;i++){
+			parts[i].mp = header.mass[j];
+		  }
+		}
+
+	N_min=N_max;
+	}
+
+	nread = fread(&dummy,sizeof(dummy),1,file);
+
+	fclose(file);
+  
+  return 0;
+}
+
+/*************************************************************************
+ NAME:       read_ascci
+ FUNCTION:   Read ascci file
+ INPUTS:     Filename of parameter file 
+ 			 Number of particles variable 
+ RETURN:     0
+**************************************************************************/ 
+
+int read_ascci( char *filename ){
+  
+  int idumb, ihalo;
+  long int i;
+  double dumb;
+  FILE *pt=NULL;
+  FILE *jpf=NULL;
+  char string[100];
+  
+  //Open the data file  	
+  if(!(pt = fopen( filename, "r" ))){
+    printf("can't open file `%s`\n", filename);
+    exit(0);
+  }
+  
+
+  printf( "\n\n************************** Reading Ascci  ****************************\n" );
+  
+  /*
+    i = 0;
+    while(  getc(pt) != EOF  ){		
+    i++;
+    }
+    PRM.Npart = i;
+  
+  
+  PRM.Npart = 102691201;
+
+  parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) ); 
+  if( parts==NULL ){printf("Particles structure could not be allocated \n");exit(0);}
+  
+  fscanf(pt,"%s",string);  
+  printf("%s\n",string);
+  //fwrite(&PRM.Npart, sizeof(PRM.Npart), 1, jpf);
+  printf("  -> %d particles in file\n",PRM.Npart);
+  
+  for( i=0; i<PRM.Npart; i++ ){
+    
+    if((i%100000) == 0)
+      printf(" Read %d particles of %d\n",i, PRM.Npart);
+
+    fscanf(pt,"%d%*[,] %lf%*[,] %lf%*[,] %lf%*[,] %lf%*[,] %lf",&ihalo, &parts[i].xp, &parts[i].yp, &parts[i].zp, &parts[i].mp, &dumb);  
+    
+    //fwrite(&parts[i].xp, sizeof(parts[i].xp), 1, jpf);
+    //fwrite(&parts[i].yp, sizeof(parts[i].yp), 1, jpf);
+    //fwrite(&parts[i].zp, sizeof(parts[i].zp), 1, jpf);
+    //fwrite(&parts[i].mp, sizeof(parts[i].mp), 1, jpf);
+  }
+  
+  //fclose(jpf);
+
+  for(i=PRM.Npart-10; i<PRM.Npart; i++ ){
+    printf("%d %lf %lf %lf %lf %lf\n",ihalo, parts[i].xp, parts[i].yp, parts[i].zp, parts[i].mp, dumb);
+  }
+  
+  //printf("%d %lf %lf %lf %lf %lf\n",ihalo, parts[i-1].xp, parts[i-1].yp, parts[i-1].zp, parts[i-1].mp, dumb);
+  */
+ 
+  //PRM.Npart = 225507;
+    parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) ); 
+    if(parts==NULL){printf("Particles structure could not be allocated \n");exit(0);}
+    
+    for(i=0; i<PRM.Npart; i++ ){		
+    
+    fscanf(pt,"%d %lf %lf %lf %lf %lf %lf %d %lf %lf",&ihalo, &parts[i].xp, &parts[i].yp, &parts[i].zp, &dumb,  &dumb,  &dumb, &idumb,&parts[i].mp, &dumb);
+    }
+    
+    //printf("%e %e %e %e\n", parts[i].xp, parts[i].yp, parts[i].zp, parts[i].mp);
+  
+  /*
+    i = 0;  
+    parts = (struct Particle *)calloc( (size_t) NMAX, sizeof( struct Particle) ); 
+    if(parts==NULL){printf("Particles structure could not be allocated \n");exit(0);}
+    
+    while(  getc(pt) != EOF  ){		
+    
+    fscanf( pt, "%lf %lf %lf %lf", 
+    &parts[i].xp,
+    &parts[i].yp,
+    &parts[i].zp,
+    &parts[i].mp
+    );			
+    i++;
+    }*/
+  /*
+    fscanf( pt, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
+    &dumb, 
+    &parts[i].xp,
+    &parts[i].yp,
+    &parts[i].zp,
+    &dumb,&dumb,&dumb,
+    &parts[i].mp,
+    &dumb,&dumb,&dumb,
+    &dumb,&dumb,&dumb
+    );			
+    i++;
+    }*/
+  
+  //PRM.Npart = i;
+  
+  fclose(pt);
+  
+  return 0;
+}
+
+/*************************************************************************
+ NAME:       write_DField
+ FUNCTION:   Writes density field obtained from CIC algorithm 
+ INPUTS:     Parameter array prm
+ RETURN:     0
+**************************************************************************/ 
+
+int write_DField( ){
+
+
+	int n,m,l,N_celda; 
+	FILE *fp;
+	char filename[80];
+
+	//Create document to write out
+	sprintf(filename, "../output_files/DF_%d.txt", PRM.Nc);
+	fp = fopen(filename,"w"); 
+
+	fprintf( fp, "#5 first raws: Divisions Grid N, Box length L(kpc), Size cells,\
+			     #Number Particles, density_contrast\n");
+	fprintf( fp, "#mass($10^{12}M_{sun}$) \n ");
+
+	//Some parameters are stored
+	fprintf( fp, "%d\n%lf\n%lf\n%d\n", 
+		     PRM.Nc, PRM.Lbox, PRM.deltax, PRM.Npart );
+
+	//Position and mass assigned is stored per cell
+	for ( n = 0; n < PRM.Nc; n++){
+		for ( m = 0; m < PRM.Nc; m++){
+			for ( l= 0; l< PRM.Nc; l++){
+				 N_celda = l+PRM.Nc*(m+PRM.Nc*n);
+				 fprintf( fp, "%lf \n",cells[N_celda].den_con);
+			}
+		}
+	} 
+
+
+	fclose(fp);
+
+	return 0;
+}
+/*************************************************************************/
+int Write_FT(  ){
+  
+	FILE *fp;
+	int n, m, l, N_celda;
+
+	//Create document to write out
+	fp = fopen("../output_files/Test_FT/Fourier_transf.dat","w"); 
+
+	//Some parameters are stored
+	fprintf( fp, "%d %d %lf %lf %f\n", 
+		     PRM.Nc, PRM.Nbins, PRM.deltak, PRM.kmin, 1.0);
+
+	//FT is stored per shell
+	for ( n = 0; n < PRM.Nc; n++){
+		for ( m = 0; m < PRM.Nc; m++){
+			for ( l= 0; l< PRM.Nc; l++){
+				 N_celda = l+PRM.Nc*(m+PRM.Nc*n);
+				 fprintf( fp, "%lf %lf %lf %lf %lf\n",
+				 	fcells[N_celda].kx, fcells[N_celda].ky, fcells[N_celda].kz,
+					fcells[N_celda].r_dconk, fcells[N_celda].i_dconk );	 		
+
+			}
+		}
+	} 
+	
+	fclose(fp);
+
+	return 0;
+}
+
+/*************************************************************************
+ NAME:       Write_PS
+ FUNCTION:   Write output file with the Power Spectrum calculated
+ INPUTS:     Mean array
+ 			 Variance array 
+ 			 Parameter array prm
+ RETURN:     0
+**************************************************************************/ 
+				
+int Write_PS( double *mean ){
+  
+	int N_celda; 
+	FILE *fp;
+	int n;
+	char file[80];
+
+	//Create document to write out
+	sprintf(file, "./PS/PS_%d.dat",PRM.Nc);
+	fp = fopen("../output_files/PS/PS.dat","w"); 
+
+	fprintf( fp, "#Number Slices, Delta k, k min \n");
+	fprintf( fp, "#	mean k (P(k)), variance k \n ");
+
+	//Some parameters are stored
+	fprintf( fp, "%d\n%1.9f\n%lf\n%lf\n", 
+		PRM.Nbins, PRM.deltak, PRM.kmin, PRM.Lbox );
+
+	//Media is stored per shell
+	for ( n = 0; n < PRM.Nbins; n++){
+	    fprintf( fp, "%lf\n",mean[n] );
+	} 
+
+	fclose(fp);
+
+	return 0;
+}
