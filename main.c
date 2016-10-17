@@ -36,7 +36,6 @@ int main( int argc, char *argv[] ){
 		
 	//Parameters 		
 	PRM.Nc = prm[N];
-	PRM.Nbins = prm[NSLICES];
 	PRM.deltax = PRM.Lbox/(1.0*PRM.Nc);
 	PRM.vcell = PRM.deltax*PRM.deltax*PRM.deltax;
 	PRM.NcTot = PRM.Nc*PRM.Nc*PRM.Nc;
@@ -66,10 +65,10 @@ int main( int argc, char *argv[] ){
 	Grid( );    
 	
 	//Assignment of mass 
- 	Mass_assignment(  );
+ 	double mt_part = Mass_assignment(  );
  	
 	//Density Contrast 
-	density_contrast( );
+	density_contrast(mt_part);
 	
 	//Associated field stored per cell
 	write_DField( );

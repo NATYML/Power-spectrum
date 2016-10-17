@@ -13,8 +13,8 @@ int Grid( );
 int locate_cell( double, double, double, int * );
 int CIC_Wfunction( double , double * );
 int TSC_Wfunction( double , double * );
-int Mass_assignment( );
-int density_contrast( );
+double Mass_assignment( );
+int density_contrast(double );
 
 // Fourier Module 
 double Dec_Alia_appr( double );

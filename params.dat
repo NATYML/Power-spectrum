@@ -5,6 +5,3 @@
 # Number of divisions in one dimension
 # N^3 cells 
 N = 256
-#.....................................
-# Number of slices P(k)
-Nslices = 30

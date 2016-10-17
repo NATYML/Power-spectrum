@@ -68,7 +68,7 @@ double Deconv_Alias( int N_cell ){
 
   double kn, ERR, fsin;
   //Nyquist Frequency                                                                                                                        
-  kn = M_PI*PRM.Nc/(1.0*PRM.Lbox);
+  kn = M_PI*PRM.Nc/PRM.Lbox;
 
   #ifdef CIC
     fsin = sin(0.5*M_PI*fcells[N_cell].kx/kn);
@@ -259,13 +259,6 @@ int FS_Grid( fftw_complex *FT_cd ){
   int a,b,c,Temp;
   //int dumb = (floor(PRM.Nc/2)+1)*PRM.Nc*PRM.Nc;
 
-  #ifdef CIC
-      p=2;  
-  #endif    
-  #ifdef TSC
-      p=3;
-  #endif 
-
   k_max_i = 0;
   //Filling Structure with kx, ky, kz and density contrast k 
   for (i = 0; i < PRM.Nc; i++){
@@ -273,8 +266,8 @@ int FS_Grid( fftw_complex *FT_cd ){
              for( k= 0; k< PRM.Nc ;k++){    
 
                 //Position of cell 
-		            N_cell = k+PRM.Nc*(j+PRM.Nc*i);
-	              //Calculating kx
+		N_cell = k+PRM.Nc*(j+PRM.Nc*i);
+	        //Calculating kx
                 if (i<PRM.Nc/2)
                     fcells[N_cell].kx = 2*i*M_PI/(1.0*PRM.Lbox);  
                 else
@@ -299,8 +292,8 @@ int FS_Grid( fftw_complex *FT_cd ){
 
                 fcells[N_cell].r_dconk = FT_cd[N_cell][0];  
                 fcells[N_cell].i_dconk = FT_cd[N_cell][1]; 
-            		fcells[N_cell].pk = (fcells[N_cell].r_dconk*fcells[N_cell].r_dconk+ fcells[N_cell].i_dconk*fcells[N_cell].i_dconk);
-		            fcells[N_cell].pk = fcells[N_cell].pk/(1.0*Deconv_Alias(N_cell)); 
+            	fcells[N_cell].pk = (fcells[N_cell].r_dconk*fcells[N_cell].r_dconk+ fcells[N_cell].i_dconk*fcells[N_cell].i_dconk);
+		fcells[N_cell].pk = fcells[N_cell].pk/(1.0*Deconv_Alias(N_cell)); 
 	       }  
 	    } 
       }
@@ -326,17 +319,14 @@ int Modes_FS( double *mean ){
      
   double kmax, pk, kmin, Npk;
   double kf = 2.0*M_PI/PRM.Lbox;
-  double dk = kf;
-  double Gkmin = 0.5*dk;
+  double dk = 0.5*kf;
+  double Gkmin = dk;//0.5*dk;
   FILE *pf=NULL;
-
   pf = fopen("../output_files/powerspec.dat","w");
   int NBINS = (int) ceil(k_max_i/dk);
-  printf("%f %f %d\n",k_max_i, dk, NBINS);
-
+  printf("Nbis %d %lf\n",NBINS,k_max_i);
   kmin = Gkmin;
-  for(k=0; k<NBINS; k++)
-    {
+  for(k=0; k<NBINS; k++){
      
       kmax = kmin+dk;
      
@@ -346,12 +336,11 @@ int Modes_FS( double *mean ){
       for(i=0; i<PRM.NcTot; i++)
     {
      
-      if( (fcells[i].k >= kmin) && (fcells[i].k < kmax) )
-        {
+      if( (fcells[i].k >= kmin) && (fcells[i].k < kmax) )    {
           pk += fcells[i].pk;
           counter++;
         }
-    }
+  }
      
       Npk = ps_norm*pk/(1.0*counter) - shotnoise;
      

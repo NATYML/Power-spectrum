@@ -5,9 +5,8 @@
 #define N_PARAMS 100
 /*-------------------------*/ 
 #define N 0
-#define NSLICES 1
-#define L 2
-#define N_part 3
+#define L 1
+#define N_part 2
 
 #define CENTER 1 
 #define I 1

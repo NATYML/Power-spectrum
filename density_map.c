@@ -39,13 +39,25 @@ return 0;
 
 int locate_cell(double xp, double yp, double zp, int *index ){
 
-	//Numbers in order to find the cell
-	//Counters in x,y y z
+       //Numbers in order to find the cell
+       //Counters in x,y y z
+       double tol = 1e-4;
 
 	// i, j, k
-       index[I] = floor( (xp / PRM.Lbox) * PRM.Nc);
-       index[J] = floor( (yp / PRM.Lbox) * PRM.Nc);
-       index[K] = floor( (zp / PRM.Lbox) * PRM.Nc );
+       if ( fabs(xp-PRM.Lbox) <=tol )
+           index[I] = PRM.Nc-1;
+       else 
+	  index[I] = floor( (xp / PRM.Lbox) * PRM.Nc);
+       
+       if (fabs(yp-PRM.Lbox)<=tol)
+	  index[J] = PRM.Nc -1;
+       else
+          index[J] = floor( (yp / PRM.Lbox) * PRM.Nc);
+
+       if (fabs(zp-PRM.Lbox)<=tol)
+	  index[K] = PRM.Nc -1;
+       else
+	 index[K] = floor( (zp / PRM.Lbox) * PRM.Nc );
 
 	//Index of cell where particle falls
 	//k + N( j + N i )
@@ -71,8 +83,8 @@ int CIC_Wfunction( double x, double *W ){
 	   W[0] = 1 - fabs(x+ PRM.deltax)/PRM.deltax;	
 
 	//Right Cell
-	if ( fabs(x - PRM.deltax)< PRM.deltax )
-	   W[2] = 1 - fabs(x - PRM.deltax)/PRM.deltax;		
+	if ( fabs( - x + PRM.deltax)< PRM.deltax )
+	   W[2] = 1 - fabs(-x + PRM.deltax)/PRM.deltax;		
 
 return 0;
 }
@@ -105,13 +117,14 @@ return 0;
  RETURN:     0
 **************************************************************************/	
 
-int Mass_assignment(  ){
+double Mass_assignment(  ){
 	
 	int i, l, k, p, q, r, pos, index[4];
 	int i0, j0, k0, counter[3] = {-1,0,1};
 	double Xc, Yc, Zc, dx, dy, dz;
 	double Wx[3],Wy[3],Wz[3],mt_cells,mt_part= 0;
-
+	
+	double temp;
  	for ( i = 0; i < PRM.Npart; i++){					
 
 		mt_part = parts[i].mp + mt_part ;	
@@ -133,7 +146,11 @@ int Mass_assignment(  ){
 			//Reading particle positions  
 		#ifdef CIC 
 		{
-		
+		  /* if(i == 86328043){
+		  printf("Wx %lf\n",  1 - fabs(parts[i].xp - Xc)/PRM.deltax);
+		  printf("Wy %lf\n",  1 - fabs(parts[i].yp - Yc)/PRM.deltax);
+		  printf("Wz %lf\n",  1 - fabs(parts[i].zp - Zc)/PRM.deltax);
+		  }*/
 		CIC_Wfunction( parts[i].xp - Xc, Wx );
 		CIC_Wfunction( parts[i].yp - Yc, Wy ); 
 		CIC_Wfunction( parts[i].zp - Zc, Wz );
@@ -151,8 +168,9 @@ int Mass_assignment(  ){
 		//Contribution to the cells mass to due to particle that falls in 
 		//cells[index[0]].mc = cells[index[0]].mc + W*parts[i].mp;	
 		cells[index[0]].mc = cells[index[0]].mc + Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp;	
-
-
+		
+		//if (i==86328043) printf("%lf %lf %lf \n",Wx[CENTER],Wy[CENTER],Wz[CENTER]);
+		temp = 0;
 		//Neighbour cells	
 		for ( p = 0; p <3; p++ ){
 				for ( q = 0; q <3; q++ ){
@@ -174,26 +192,29 @@ int Mass_assignment(  ){
 							if ( i0 < 0 ) i0 = PRM.Nc-1;
 							if ( j0 < 0 ) j0 = PRM.Nc-1;							
 							if ( k0 < 0 ) k0 = PRM.Nc-1;
-
+							
 							//Calculating position
 							pos = ( i0*PRM.Nc + j0 )*PRM.Nc + k0;
-							cells[pos].mc = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].mc;   					                                   
+							cells[pos].mc = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].mc;   					                                    temp = temp +  Wx[p]*Wy[q]*Wz[r]*parts[i].mp;
+							//if (i==86328043) {printf("%lf %lf %lf \n",Wx[p],Wy[q],Wz[r]);}
+							   
 				   		}
 				}
 					
-		}		
+		}	
 			
+            	if( (parts[i].mp - temp) < 0 ){printf("Problem: part %d %lf %lf\n",i,parts[i].mp,temp);getchar();}
 	}
-
-							//Test for cloud in cell
+	
+	//Test for cloud in cell
 	#ifdef TEST_CIC 
 	mt_cells=0;
         for( k=0; k<PRM.Nc*PRM.Nc*PRM.Nc;k++ ) mt_cells = mt_cells + cells[k].mc; 
  		printf("Cells total mass %lf \t Part total mass %lf \n\n", mt_cells, mt_part );
-		printf("%e\n",fabs(mt_cells-mt_part)/mt_part);	
+		printf("Relative Error Mass cells %e\n",fabs(mt_cells-mt_part)/mt_part);	
 	#endif
-
-return 0;
+		
+		return mt_part;
 }
 
 /*************************************************************************
@@ -204,24 +225,27 @@ return 0;
  RETURN:     0
 **************************************************************************/	 
 
-int density_contrast(  ){
+int density_contrast( double mt_part){
+  
+  int i; 
+  double bck_den;	
+  
+  bck_den = PRM.Npart*parts[0].mp/(PRM.Lbox*PRM.Lbox*PRM.Lbox);
+  //bck_den = \Rho_m*\rho_crit
+#ifdef HALOS
+  //Box 400
+  //bck_den = 27.7536627*0.258;
+  //Multidark 
+ bck_den = 27.7536627*0.307115;
+  //bck_den = mt_part/(PRM.Lbox*PRM.Lbox*PRM.Lbox);
 
-    int i; 
-    double bck_den;	
-
-    bck_den = PRM.Npart*parts[0].mp/(PRM.Lbox*PRM.Lbox*PRM.Lbox);
-    //bck_den = \Rho_m*\rho_crit
-    #ifdef HALOS
-         //Box 400
-         bck_den = 27.7536627*0.258;
-	 //Multidark
-	 //bck_den = 27.7536627*0.307115;
-    #endif
-	 
-    //Density contrast 
-    for(i= 0; i<PRM.NcTot; i++ ){
-        cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	
-    } 
-
-return 0;	
-     }
+  printf("<<<<<<<<<<<<< fix=%lf mas/v=%lf\n",bck_den, mt_part/(PRM.Lbox*PRM.Lbox*PRM.Lbox));
+#endif
+  
+  //Density contrast 
+  for(i= 0; i<PRM.NcTot; i++ ){
+    cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	
+  } 
+  
+  return 0;	
+}
