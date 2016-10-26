@@ -32,6 +32,7 @@ struct Cell{
 	double yc;
 	double zc;
 	double mc;
+	double mngp;
 	double den_con;
 
 }*cells;

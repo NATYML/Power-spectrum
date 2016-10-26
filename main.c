@@ -73,6 +73,7 @@ int main( int argc, char *argv[] ){
 	//Associated field stored per cell
 	write_DField( );
        
+    getchar();
 	//FT contrast density
 	printf( "\n\n************************* Fourier transform ***************************\n\n" ); 
 	//RTC( FT_cd );	

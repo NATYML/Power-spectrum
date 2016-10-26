@@ -300,7 +300,7 @@ int read_ascci( char *filename ){
 int write_DField( ){
 
 
-	int n,m,l,N_celda; 
+	int n,m,l,N_cell; 
 	FILE *fp;
 	char filename[80];
 
@@ -320,8 +320,9 @@ int write_DField( ){
 	for ( n = 0; n < PRM.Nc; n++){
 		for ( m = 0; m < PRM.Nc; m++){
 			for ( l= 0; l< PRM.Nc; l++){
-				 N_celda = l+PRM.Nc*(m+PRM.Nc*n);
-				 fprintf( fp, "%lf \n",cells[N_celda].den_con);
+				 N_cell = l+PRM.Nc*(m+PRM.Nc*n);
+				 //fprintf( fp, "%lf \n",cells[N_cell].den_con);
+				 fprintf( fp, "%lf %lf\n",cells[N_cell].mc,cells[N_cell].mngp);
 			}
 		}
 	} 

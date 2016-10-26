@@ -131,6 +131,9 @@ double Mass_assignment(  ){
 
 		//locates cell where particle i falls in 
 		locate_cell( parts[i].xp, parts[i].yp, parts[i].zp, index );
+
+		//Nearest grid point scheme
+		cells[index[0]].mngp = cells[index[0]].mngp + parts[i].mp;	
 			
 		//Initializing window functions	
 		for ( l = 0; l < 3; l++){ Wx[l]=0; Wy[l]=0; Wz[l]=0; }	
@@ -167,7 +170,8 @@ double Mass_assignment(  ){
 		
 		//Contribution to the cells mass to due to particle that falls in 
 		//cells[index[0]].mc = cells[index[0]].mc + W*parts[i].mp;	
-		cells[index[0]].mc = cells[index[0]].mc + Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp;	
+		cells[index[0]].mc = cells[index[0]].mc + Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp;		
+
 		
 		//if (i==86328043) printf("%lf %lf %lf \n",Wx[CENTER],Wy[CENTER],Wz[CENTER]);
 		temp = 0;
@@ -195,7 +199,8 @@ double Mass_assignment(  ){
 							
 							//Calculating position
 							pos = ( i0*PRM.Nc + j0 )*PRM.Nc + k0;
-							cells[pos].mc = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].mc;   					                                    temp = temp +  Wx[p]*Wy[q]*Wz[r]*parts[i].mp;
+							cells[pos].mc = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].mc;   					                                    
+							temp = temp +  Wx[p]*Wy[q]*Wz[r]*parts[i].mp;
 							//if (i==86328043) {printf("%lf %lf %lf \n",Wx[p],Wy[q],Wz[r]);}
 							   
 				   		}
@@ -214,7 +219,7 @@ double Mass_assignment(  ){
 		printf("Relative Error Mass cells %e\n",fabs(mt_cells-mt_part)/mt_part);	
 	#endif
 		
-		return mt_part;
+	return mt_part;
 }
 
 /*************************************************************************
