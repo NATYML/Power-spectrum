@@ -225,23 +225,13 @@ double Mass_assignment(  ){
  RETURN:     0
 **************************************************************************/	 
 
-int density_contrast( double mt_part){
+int density_contrast( double mt_part ){
   
   int i; 
   double bck_den;	
   
-  bck_den = PRM.Npart*parts[0].mp/(PRM.Lbox*PRM.Lbox*PRM.Lbox);
-  //bck_den = \Rho_m*\rho_crit
-#ifdef HALOS
-  //Box 400
-  //bck_den = 27.7536627*0.258;
-  //Multidark 
- bck_den = 27.7536627*0.307115;
-  //bck_den = mt_part/(PRM.Lbox*PRM.Lbox*PRM.Lbox);
-
-  printf("<<<<<<<<<<<<< fix=%lf mas/v=%lf\n",bck_den, mt_part/(PRM.Lbox*PRM.Lbox*PRM.Lbox));
-#endif
-  
+  bck_den = mt_part/(PRM.Lbox*PRM.Lbox*PRM.Lbox);
+    
   //Density contrast 
   for(i= 0; i<PRM.NcTot; i++ ){
     cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	
