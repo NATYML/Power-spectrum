@@ -313,7 +313,7 @@ int write_DField( ){
 	fprintf( fp, "#mass($10^{12}M_{sun}$) \n ");
 
 	//Some parameters are stored
-	fprintf( fp, "%d\n%lf\n%lf\n%d\n", 
+	fprintf( fp, "%d %lf\n%lf %d\n", 
 		     PRM.Nc, PRM.Lbox, PRM.deltax, PRM.Npart );
 
 	//Position and mass assigned is stored per cell
