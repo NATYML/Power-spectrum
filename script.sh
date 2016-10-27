@@ -1,0 +1,1 @@
+./main.out ../Box_50x256_100 ./params.dat
