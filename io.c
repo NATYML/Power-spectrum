@@ -218,18 +218,20 @@ int read_ascci( char *filename ){
     exit(0);
   }
   
-
   printf( "\n\n************************** Reading Ascci  ****************************\n" );
    
   parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) ); 
   if( parts==NULL ){printf("Particles structure could not be allocated \n");exit(0);}
+
+  for(i=0; i<PRM.Npart; i++ ){
+    fscanf( pt,"%lf %lf %lf %lf",&parts[i].xp, &parts[i].yp, &parts[i].zp, &parts[i].mp );  
+  }
   
-  fscanf(pt,"%s",string);  
-  
-  for( i=0; i<PRM.Npart; i++ ){   
+  /*fscanf(pt,"%s",string);  
+	 for( i=0; i<PRM.Npart; i++ ){   
     fscanf( pt,"%d%*[,] %lf%*[,] %lf%*[,] %lf%*[,] %lf%*[,] %lf",&ihalo, &parts[i].xp, &parts[i].yp, &parts[i].zp, &parts[i].mp, &dumb);  
     parts[i].mp = parts[i].mp/(1.e10);
-  }
+  }*/
   // if (parts[i].xp<0 ||parts[i].yp<0||parts[i].zp<0) printf("%d\n",i);    
   
   
@@ -240,50 +242,20 @@ int read_ascci( char *filename ){
   
   //printf("%d %lf %lf %lf %lf %lf\n",ihalo, parts[i-1].xp, parts[i-1].yp, parts[i-1].zp, parts[i-1].mp, dumb);
   
-  
-  //PRM.Npart = 225507;
-  /*    parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) ); 
-    if(parts==NULL){printf("Particles structure could not be allocated \n");exit(0);}
+  /*
+  parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) ); 
+  if(parts==NULL){printf("Particles structure could not be allocated \n");exit(0);}
     
-    for(i=0; i<PRM.Npart; i++ ){		
+  for(i=0; i<PRM.Npart; i++ ){		
     
     fscanf(pt,"%d %lf %lf %lf %lf %lf %lf %d %lf %lf\n",
 	      &ihalo, &parts[i].xp, &parts[i].yp, &parts[i].zp, &dumb,  &dumb,  &dumb, &idumb,&parts[i].mp, &dumb);
     
-    if(i==42611) {printf("%lf %lf %lf\n",parts[i].xp, parts[i].yp, parts[i].zp);
-      }}    
+    //if(i==42611) {printf("%lf %lf %lf\n",parts[i].xp, parts[i].yp, parts[i].zp);
+      
+  }}   */ 
 //printf("%e %e %e %e\n", parts[i].xp, parts[i].yp, parts[i].zp, parts[i].mp);
   
-  /*
-    i = 0;  
-    parts = (struct Particle *)calloc( (size_t) NMAX, sizeof( struct Particle) ); 
-    if(parts==NULL){printf("Particles structure could not be allocated \n");exit(0);}
-    
-    while(  getc(pt) != EOF  ){		
-    
-    fscanf( pt, "%lf %lf %lf %lf", 
-    &parts[i].xp,
-    &parts[i].yp,
-    &parts[i].zp,
-    &parts[i].mp
-    );			
-    i++;
-    }*/
-  /*
-    fscanf( pt, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
-    &dumb, 
-    &parts[i].xp,
-    &parts[i].yp,
-    &parts[i].zp,
-    &dumb,&dumb,&dumb,
-    &parts[i].mp,
-    &dumb,&dumb,&dumb,
-    &dumb,&dumb,&dumb
-    );			
-    i++;
-    }*/
-  
-  //PRM.Npart = i;
   
   fclose(pt);
   
