@@ -6,7 +6,6 @@
 /*-------------------------*/ 
 #define N 0
 #define L 1
-#define N_part 2
 
 #define CENTER 1 
 #define I 1

@@ -12,13 +12,14 @@ int main( int argc, char *argv[] ){
     	//Defining variables
   	float prm[N_PARAMS];
   	char *filename, *param_filename; 
+	char cmd[100];
 	clock_t t;
 	t = clock();
     
   	//Reading snapshot and param filename 
 	filename = argv[1];
 	param_filename = argv[2]; 
-	
+	 	
 	read_parameters( prm, param_filename );		
 	
 	//Reading particle positions  
@@ -30,7 +31,16 @@ int main( int argc, char *argv[] ){
 	#endif	
 	#ifdef ASCCI
 		PRM.Lbox = prm[L];
-		PRM.Npart = prm[N_part];
+		sprintf(cmd," wc -l < ./%s", filename);
+		FILE *f = popen(cmd,"r");
+		char path[100];
+
+		while (fgets(path, sizeof(path)-1, f) != NULL) {
+		     printf("Lines in ascci input file: %s", path);
+		     PRM.Npart = atoi(path);
+		}
+		
+		pclose(f);
 		read_ascci( filename );
 	#endif  
 		

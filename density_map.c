@@ -239,7 +239,14 @@ int density_contrast( double mt_part ){
     
   //Density contrast 
   for(i= 0; i<PRM.NcTot; i++ ){
-    cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	
+
+    #ifdef CIC
+      cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	
+    #endif 
+    #ifdef NGP
+      cells[i].den_con = (cells[i].mngp/PRM.vcell)/bck_den - 1.0;	
+    #endif  
+
   } 
   
   return 0;	
