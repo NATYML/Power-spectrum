@@ -1,4 +1,4 @@
-#include "allvars.h"
+    #include "allvars.h"
 
 /*************************************************************************
  NAME:       conf2dump
@@ -232,7 +232,7 @@ int read_ascci( char *filename ){
     fscanf( pt,"%d%*[,] %lf%*[,] %lf%*[,] %lf%*[,] %lf%*[,] %lf",&ihalo, &parts[i].xp, &parts[i].yp, &parts[i].zp, &parts[i].mp, &dumb);  
     parts[i].mp = parts[i].mp/(1.e10);
   
-  if (parts[i].xp<0 ||parts[i].yp<0||parts[i].zp<0) printf("%d\n",i);    
+  if (parts[i].xp<0 ||parts[i].yp<0||parts[i].zp<0) printf("NEGATIVE VALUE\n");    
   }
   
   /*  for(i=PRM.Npart-10; i<PRM.Npart; i++ ){
@@ -350,21 +350,16 @@ int Write_PS( double *mean ){
 	FILE *fp;
 	int n;
 	char file[80];
+        double k;
 
 	//Create document to write out
 	sprintf(file, "./PS/PS_%d.dat",PRM.Nc);
 	fp = fopen("../output_files/PS/PS.dat","w"); 
 
-	fprintf( fp, "#Number Slices, Delta k, k min \n");
-	fprintf( fp, "#	mean k (P(k)), variance k \n ");
-
-	//Some parameters are stored
-	fprintf( fp, "%d\n%1.9f\n%lf\n%lf\n", 
-		PRM.Nbins, PRM.deltak, PRM.kmin, PRM.Lbox );
-
 	//Media is stored per shell
 	for ( n = 0; n < PRM.Nbins; n++){
-	    fprintf( fp, "%lf\n",mean[n] );
+                k = PRM.kmin + ( 0.5+n )*PRM.deltak;
+                fprintf( fp, "%lf %lf\n", k ,mean[n] );
 	} 
 
 	fclose(fp);

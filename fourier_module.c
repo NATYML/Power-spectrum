@@ -328,20 +328,27 @@ int Modes_FS( double *mean ){
   FILE *pf=NULL;
   pf = fopen("../output_files/powerspec.dat","w");
   int NBINS = (int) ceil(k_max_i/dk);
+  PRM.Nbins = NBINS;
   printf("Nbis %d %lf\n",NBINS,k_max_i);
   kmin = Gkmin;
+  //PRM.kmin = kmin;
+  //PRM.deltak = dk;
+  
+  
   for(k=0; k<NBINS; k++){
      
       kmax = kmin+dk;
      
       pk=0.0;
       counter=0;
+      mean[k] = 0;
      
       for(i=0; i<PRM.NcTot; i++)
     {
      
       if( (fcells[i].k >= kmin) && (fcells[i].k < kmax) )    {
           pk += fcells[i].pk;
+          mean[k] += fcells[i].pk;
           counter++;
         }
   }

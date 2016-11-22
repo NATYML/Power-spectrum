@@ -14,6 +14,7 @@ int main( int argc, char *argv[] ){
   	char *filename, *param_filename; 
 	char cmd[100];
 	clock_t t;
+        double time_taken; 
 	t = clock();
     
   	//Reading snapshot and param filename 
@@ -115,8 +116,8 @@ int main( int argc, char *argv[] ){
 
 	//Time taken 
 	t = clock() - t;
-    double time_taken = ((double)t)/CLOCKS_PER_SEC;
-    printf("Time %f\n",time_taken/60);
+        time_taken = ((double)t)/CLOCKS_PER_SEC;
+        printf("Time %f\n",time_taken/60);
   
 return 0;
 }

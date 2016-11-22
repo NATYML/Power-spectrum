@@ -27,8 +27,5 @@ run:
 clean:
 		rm -rf *.o *.out 
 
-#edit: 
-#		kate *.c *.h makefile &
-
 edit: 
-		open *.c *.h makefile &			
+		kate *.c *.h makefile &
