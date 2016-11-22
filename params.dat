@@ -4,4 +4,4 @@
 #.....................................
 # Number of divisions in one dimension
 # N^3 cells
-N = 256
+N = 64

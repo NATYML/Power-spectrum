@@ -4,12 +4,8 @@
 #.....................................
 # Number of divisions in one dimension
 # N^3 cells 
-N = 64
+N = 256
 #...............................
 #Length Box
 #L = 400
 L = 1000
-#.....................................
-#Number of particles
-#N_part = 225507
-N_part = 102691202

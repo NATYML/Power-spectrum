@@ -36,8 +36,8 @@ int main( int argc, char *argv[] ){
 		char path[100];
 
 		while (fgets(path, sizeof(path)-1, f) != NULL) {
-		     printf("Lines in ascci input file: %s", path);
-		     PRM.Npart = atoi(path);
+		     printf("\n\nLines in ascci input file: %s", path);
+		     PRM.Npart = atoi(path)-1;
 		}
 		
 		pclose(f);
@@ -83,7 +83,6 @@ int main( int argc, char *argv[] ){
 	//Associated field stored per cell
 	write_DField( );
        
-    getchar();
 	//FT contrast density
 	printf( "\n\n************************* Fourier transform ***************************\n\n" ); 
 	//RTC( FT_cd );	

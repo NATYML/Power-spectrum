@@ -69,7 +69,10 @@ double Deconv_Alias( int N_cell ){
   double kn, ERR, fsin;
   //Nyquist Frequency                                                                                                                        
   kn = M_PI*PRM.Nc/PRM.Lbox;
-
+  
+  #ifdef NGP
+    ERR = 1.0;
+  #endif
   #ifdef CIC
     fsin = sin(0.5*M_PI*fcells[N_cell].kx/kn);
     ERR = 1.0 - (2.0/3.0)*fsin*fsin;
@@ -294,6 +297,7 @@ int FS_Grid( fftw_complex *FT_cd ){
                 fcells[N_cell].i_dconk = FT_cd[N_cell][1]; 
             	fcells[N_cell].pk = (fcells[N_cell].r_dconk*fcells[N_cell].r_dconk+ fcells[N_cell].i_dconk*fcells[N_cell].i_dconk);
 		fcells[N_cell].pk = fcells[N_cell].pk/(1.0*Deconv_Alias(N_cell)); 
+	   
 	       }  
 	    } 
       }

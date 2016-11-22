@@ -9,17 +9,19 @@
 
 int Grid( ){
 
-int i, j, k, N_CELL;
+int i, j, k, N_cell;
 
 for ( i = 0; i < PRM.Nc; i++){
+
 	for ( j = 0; j < PRM.Nc; j++){
 		for ( k = 0; k< PRM.Nc;k++){
-			//index
-			N_CELL = k+PRM.Nc*(j+PRM.Nc*i);
 
-			cells[N_CELL].xc = i*PRM.deltax;
-			cells[N_CELL].yc = j*PRM.deltax;
-			cells[N_CELL].zc = k*PRM.deltax;
+			//index
+			N_cell = k+PRM.Nc*(j+PRM.Nc*i);
+
+			cells[N_cell].xc = i*PRM.deltax;
+			cells[N_cell].yc = j*PRM.deltax;
+			cells[N_cell].zc = k*PRM.deltax;
 			}
 		}
 	} 
@@ -127,33 +129,36 @@ double Mass_assignment(  ){
 	double temp;
  	for ( i = 0; i < PRM.Npart; i++){					
 
-		mt_part = parts[i].mp + mt_part ;	
+	        mt_part = parts[i].mp + mt_part ;	
 
-		//locates cell where particle i falls in 
-		locate_cell( parts[i].xp, parts[i].yp, parts[i].zp, index );
-
-		//Nearest grid point scheme
-		cells[index[0]].mngp = cells[index[0]].mngp + parts[i].mp;	
-			
-		//Initializing window functions	
-		for ( l = 0; l < 3; l++){ Wx[l]=0; Wy[l]=0; Wz[l]=0; }	
+	        //locates cell where particle i falls in 
+	        locate_cell( parts[i].xp, parts[i].yp, parts[i].zp, index );
+	
+	        //Nearest grid point scheme
+	       
+	        cells[index[0]].mngp = cells[index[0]].mngp + parts[i].mp;	
+		  
+	       	
+	        //Initializing window functions	
+	        //for ( l = 0; l < 3; l++){ Wx[l]=0; Wy[l]=0; Wz[l]=0; }	
 		
 		/* Cell center */
-		Xc = cells[index[0]].xc + PRM.deltax*0.5;
+		/*	Xc = cells[index[0]].xc + PRM.deltax*0.5;
 		Yc = cells[index[0]].yc + PRM.deltax*0.5;
 		Zc = cells[index[0]].zc + PRM.deltax*0.5;
       	
 		//Finding contribution of particle i to the cell's mass
 		//index[0]: Index of cell where particle falls in 
-		
+
 			//Reading particle positions  
+	
 		#ifdef CIC 
 		{
-		  /* if(i == 86328043){
+		  if(i == 86328043){
 		  printf("Wx %lf\n",  1 - fabs(parts[i].xp - Xc)/PRM.deltax);
 		  printf("Wy %lf\n",  1 - fabs(parts[i].yp - Yc)/PRM.deltax);
 		  printf("Wz %lf\n",  1 - fabs(parts[i].zp - Zc)/PRM.deltax);
-		  }*/
+		  }
 		CIC_Wfunction( parts[i].xp - Xc, Wx );
 		CIC_Wfunction( parts[i].yp - Yc, Wy ); 
 		CIC_Wfunction( parts[i].zp - Zc, Wz );
@@ -167,7 +172,7 @@ double Mass_assignment(  ){
 		TSC_Wfunction( parts[i].zp - Zc, Wz );
 		}
 		#endif 
-		
+	
 		//Contribution to the cells mass to due to particle that falls in 
 		//cells[index[0]].mc = cells[index[0]].mc + W*parts[i].mp;	
 		cells[index[0]].mc = cells[index[0]].mc + Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp;		
@@ -206,20 +211,21 @@ double Mass_assignment(  ){
 				   		}
 				}
 					
-		}	
+		}
 			
             	if( (parts[i].mp - temp) < 0 ){printf("Problem: part %d %lf %lf\n",i,parts[i].mp,temp);getchar();}
+		*/
 	}
 	
 	//Test for cloud in cell
 	#ifdef TEST_CIC 
 	mt_cells=0;
-        for( k=0; k<PRM.Nc*PRM.Nc*PRM.Nc;k++ ) mt_cells = mt_cells + cells[k].mc; 
+        for( k=0; k<PRM.Nc*PRM.Nc*PRM.Nc;k++ ) mt_cells = mt_cells + cells[k].mngp; 
  		printf("Cells total mass %lf \t Part total mass %lf \n\n", mt_cells, mt_part );
 		printf("Relative Error Mass cells %e\n",fabs(mt_cells-mt_part)/mt_part);	
 	#endif
 		
-	return mt_part;
+return mt_part;
 }
 
 /*************************************************************************
@@ -240,11 +246,12 @@ int density_contrast( double mt_part ){
   //Density contrast 
   for(i= 0; i<PRM.NcTot; i++ ){
 
-    #ifdef CIC
-      cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	
-    #endif 
+   
     #ifdef NGP
       cells[i].den_con = (cells[i].mngp/PRM.vcell)/bck_den - 1.0;	
+    #else
+      cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	 
+      printf("problem \n");
     #endif  
 
   } 
