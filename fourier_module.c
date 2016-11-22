@@ -332,7 +332,7 @@ int Modes_FS( double *mean ){
   printf("Nbis %d %lf\n",NBINS,k_max_i);
   kmin = Gkmin;
   //PRM.kmin = kmin;
-  //PRM.deltak = dk;
+  //iPRM.deltak = dk;
   
   
   for(k=0; k<NBINS; k++){

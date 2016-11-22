@@ -66,10 +66,6 @@ int main( int argc, char *argv[] ){
 	fcells = (struct FCell *)calloc((size_t) PRM.NcTot, sizeof( struct FCell) );
 	if(fcells==NULL){printf("Fcells structure not allocated\n");exit(0);}
 	
-	//Mean and variance of contrast density module  
-	double *mean;
-	mean = calloc((size_t) PRM.Nbins,sizeof(double));
-
 	printf( "\n\n******************************** CIC  *********************************\n\n" ); 
 
 	//The cells are created 		
@@ -100,6 +96,13 @@ int main( int argc, char *argv[] ){
   	#ifdef TEST_FT
 	CTR( FT_cd );  
 	#endif
+    
+        //Mean of contrast density module  
+	double *mean;
+        double kf = 2.0*M_PI/PRM.Lbox;
+        PRM.deltak = 0.5*kf;
+        PRM.Nbins = (int) ceil( k_max_i/PRM.deltak );
+	mean = calloc((size_t) PRM.Nbins,sizeof(double));
 
 	//Calculating the power spectrum
 	Modes_FS( mean );
