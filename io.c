@@ -358,7 +358,7 @@ int Write_PS( double *mean ){
 
 	//Media is stored per shell
 	for ( n = 0; n < PRM.Nbins; n++){
-                k = PRM.kmin + (n+ 1.5)*PRM.deltak;
+                k = PRM.kmin + (n+ 0.5)*PRM.deltak;
                 fprintf( fp, "%lf %lf\n", k ,mean[n] );
 	} 
 

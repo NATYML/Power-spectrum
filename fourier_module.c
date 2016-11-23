@@ -262,7 +262,7 @@ int FS_Grid( fftw_complex *FT_cd ){
   int a,b,c,Temp;
   //int dumb = (floor(PRM.Nc/2)+1)*PRM.Nc*PRM.Nc;
 
-  k_max_i = 0;
+  k_max = 0;
   //Filling Structure with kx, ky, kz and density contrast k 
   for (i = 0; i < PRM.Nc; i++){
         for ( j = 0; j < PRM.Nc; j++){
@@ -291,7 +291,7 @@ int FS_Grid( fftw_complex *FT_cd ){
                                           fcells[N_cell].ky*fcells[N_cell].ky +
                                           fcells[N_cell].kz*fcells[N_cell].kz );
  
-		if ( fcells[N_cell].k > k_max_i ){ k_max_i =  fcells[N_cell].k;}
+		if ( fcells[N_cell].k > k_max ){ k_max =  fcells[N_cell].k;}
 
                 fcells[N_cell].r_dconk = FT_cd[N_cell][0];  
                 fcells[N_cell].i_dconk = FT_cd[N_cell][1]; 
@@ -316,27 +316,18 @@ return 0;
 
 int Modes_FS( double *mean ){
 
-  int i, j, index, k, counter;
+  int i, k, counter;
   double ps_norm = (1.0*PRM.Lbox*PRM.Lbox*PRM.Lbox)/pow(1.0*PRM.Nc,6);
   double shotnoise = PRM.vcell/(1.0*PRM.Npart);
   int *Length;
      
-  double kmax, pk, kmin, Npk;
-  double kf = 2.0*M_PI/PRM.Lbox;
-  double dk = 0.5*kf;
-  double Gkmin = dk;//0.5*dk;
+  double kmax, kmin;
+  kmin = PRM.kmin;
  
- 
-  int NBINS = (int) ceil(k_max_i/dk);
-  PRM.Nbins = NBINS;
-  printf("Nbis %d %lf\n",NBINS,k_max_i);
-  kmin = Gkmin;
- 
-  for(k=0; k<NBINS; k++){
+  for( k=0; k<PRM.Nbins; k++  ){
      
-      kmax = kmin+dk;
+      kmax = kmin+PRM.deltak;
      
-      pk=0.0;
       counter=0;
       mean[k] = 0;
     
