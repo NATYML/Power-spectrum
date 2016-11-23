@@ -108,7 +108,7 @@ int main( int argc, char *argv[] ){
 	Modes_FS( mean );
 	
 	//Out file
-	//Write_PS( mean ); 
+	Write_PS( mean ); 
 	
 	//Free memory
 	fftw_free( FT_cd );

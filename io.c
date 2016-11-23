@@ -354,11 +354,11 @@ int Write_PS( double *mean ){
 
 	//Create document to write out
 	sprintf(file, "./PS/PS_%d.dat",PRM.Nc);
-	fp = fopen("../output_files/PS/PS.dat","w"); 
+	fp = fopen("../output_files/PS.dat","w"); 
 
 	//Media is stored per shell
 	for ( n = 0; n < PRM.Nbins; n++){
-                k = PRM.kmin + ( 0.5+n )*PRM.deltak;
+                k = PRM.kmin + (n+ 1.5)*PRM.deltak;
                 fprintf( fp, "%lf %lf\n", k ,mean[n] );
 	} 
 

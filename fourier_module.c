@@ -325,45 +325,35 @@ int Modes_FS( double *mean ){
   double kf = 2.0*M_PI/PRM.Lbox;
   double dk = 0.5*kf;
   double Gkmin = dk;//0.5*dk;
-  FILE *pf=NULL;
-  pf = fopen("../output_files/powerspec.dat","w");
+ 
+ 
   int NBINS = (int) ceil(k_max_i/dk);
   PRM.Nbins = NBINS;
   printf("Nbis %d %lf\n",NBINS,k_max_i);
   kmin = Gkmin;
-  //PRM.kmin = kmin;
-  //iPRM.deltak = dk;
-  
-  
+ 
   for(k=0; k<NBINS; k++){
      
       kmax = kmin+dk;
      
       pk=0.0;
       counter=0;
-      //mean[k] = 0;
-     
-      for(i=0; i<PRM.NcTot; i++)
-    {
+      mean[k] = 0;
+    
+      for(i=0; i<PRM.NcTot; i++){
+          
       
-      if( (fcells[i].k >= kmin) && (fcells[i].k < kmax) )    {
-          pk += fcells[i].pk;
-          //mean[k] += fcells[i].pk;
+      if( (fcells[i].k >= kmin) && (fcells[i].k < kmax) ) {
+          
+          mean[k]  += fcells[i].pk;
           counter++;
         }
-  
-     
-      Npk = ps_norm*pk/(1.0*counter) - shotnoise;
-     
-      //printf("%16.8e %16.8e %16.8e %d\n",kmin+0.5*dk, Npk, pk, counter);
-      //printf("%16.8e\n",Npk);
-      fprintf(pf,"%16.8e %16.8e %12d\n",kmin+0.5*dk, Npk, counter);
-      kmin = kmax;
+      }
       
+      mean[k]  = ps_norm*mean[k]/(1.0*counter) - shotnoise;
+      kmin = kmax;
+        
     }
-    }
- 
-  fclose(pf);
  
   return 0; 
 }
