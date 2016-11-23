@@ -306,12 +306,10 @@ return 0;
 }
 
 /*************************************************************************
- NAME:       Modes_FS
+ NAME:          Modes_FS
  FUNCTION:   Calculating the Power Spectrum 
- INPUTS:     array to save mean
-             array to save variance 
-             parameters prm 
- RETURN:     0
+ INPUTS:        array to save mean
+ RETURN:       0
 **************************************************************************/ 
 
 int Modes_FS( double *mean ){
