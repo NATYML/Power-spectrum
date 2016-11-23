@@ -345,13 +345,13 @@ int Modes_FS( double *mean ){
      
       for(i=0; i<PRM.NcTot; i++)
     {
-      /*  
+      
       if( (fcells[i].k >= kmin) && (fcells[i].k < kmax) )    {
           pk += fcells[i].pk;
           //mean[k] += fcells[i].pk;
           counter++;
         }
-  }
+  
      
       Npk = ps_norm*pk/(1.0*counter) - shotnoise;
      
@@ -359,11 +359,11 @@ int Modes_FS( double *mean ){
       //printf("%16.8e\n",Npk);
       fprintf(pf,"%16.8e %16.8e %12d\n",kmin+0.5*dk, Npk, counter);
       kmin = kmax;
-      */
+      
     }
     }
  
-  //fclose(pf);
+  fclose(pf);
  
   return 0; 
 }
