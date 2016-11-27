@@ -338,10 +338,12 @@ int Modes_FS( double *mean ){
           counter++;
         }
       }
+
+      if (counter == 0) mean[k] = 0;
+      else mean[k] = ps_norm*mean[k]/(1.0*counter) - shotnoise;
       
-      mean[k]  = ps_norm*mean[k]/(1.0*counter) - shotnoise;
       kmin = kmax;
-        
+       
     }
  
   return 0; 

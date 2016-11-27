@@ -7,19 +7,16 @@
 
 int main ( int argc,  char **argv ) {
     
-    int i,size;
-    double ki, pki, kmin, kmax, deltak, Niter,Lbox;
-    char *file, cmd[100];
+    int i,size,nk;
+    double pki, dumb;
+    char *file, *file2, cmd[100],cmd2[100];
     FILE *pt, *fl;
     
     file = argv[1];
-    kmin = atof( argv[2] );
-    Niter = atoi( argv[3] );
-    Lbox = atof( argv[4] );
-    deltak = M_PI/Lbox;
-    kmax = kmin+deltak*Niter;
-    
-    pt = fopen( file,"r" );
+    file2 = argv[2];
+ 
+    /* Obtaining numer of lines of file 1,
+     * file to interpolate*/
     
     sprintf( cmd," wc -l < ./%s", file );
     FILE *f = popen( cmd,"r" );
@@ -34,39 +31,65 @@ int main ( int argc,  char **argv ) {
     
     double k[size], pk[size];
     
+    /*Reading file to perform the interpolation*/
+    pt = fopen( file,"r" );
+    
     for (i=0; i<size;i++){
       
         fscanf(  pt, "%lf %lf", &k[i],&pk[i]  );
         
     }
+    pclose(pt);
     
-    if ( kmax> k[size-1] ) {
+    /* Obtaining numer of lines of 
+     * file containing k values*/
+    
+    sprintf( cmd," wc -l < ./%s", file );
+    f = popen( cmd,"r" );
+    char path2[100];
+    
+    while ( fgets(path2, sizeof(path2)-1, f ) != NULL) {
         
-        printf("%lf %lf %lf\n",deltak,kmax, k[size-1]);
-        printf("Value of k out of range of interpolation\n");
-        exit(0);
+            printf("\nLines in k input file: %s\n", path2);
+            nk = atoi(path2)-1;
+    }
+    pclose(f);
+    
+    /*Reading file to obtain k values to perform interpolation*/
+    double ki[nk];
+    FILE *pt2 = fopen( file2,"r" );
+    
+    for (i=0; i<nk;i++){
+      
+        fscanf(  pt2, "%lf %lf", &ki[i],&dumb  );
         
-    }   
-        
+    }
+    pclose(pt2);
+    
+    /* Performing interpolation*/
     gsl_interp_accel *acc = gsl_interp_accel_alloc ();
     gsl_spline *spline = gsl_spline_alloc ( gsl_interp_cspline, size );
 
     gsl_spline_init ( spline, k, pk, size );
 
+    /* Writing interpolated values*/
     fl = fopen( "pk.dat","w" );
     
-    for ( i = 0; i < Niter; i++ ){
+    for ( i = 0; i < nk; i++ ){
     
-        ki = kmin+deltak*i;
-        pki = gsl_spline_eval ( spline, ki, acc );
-        fprintf ( fl,"%lf %lf\n", ki, pki );
+        pki = gsl_spline_eval ( spline, ki[i], acc );
+        fprintf ( fl,"%lf %lf\n", ki[i], pki );
         
     }
     
+    
+    i =10;
+    pki = gsl_spline_eval ( spline, ki[i], acc );
+    printf ( "%lf %lf\n", ki[i], pki );
+        
     gsl_spline_free (spline);
     gsl_interp_accel_free (acc);
 
-    fclose( fl );
-    
+        
     return 0;
     }
