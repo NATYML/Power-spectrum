@@ -7,9 +7,9 @@
 
 int main ( int argc,  char **argv ) {
     
-    int i,size,nk;
+    int i, size, nk;
     double pki, dumb;
-    char *file, *file2, cmd[100],cmd2[100];
+    char *file, *file2, cmd[100];
     FILE *pt, *fl;
     
     file = argv[1];
@@ -43,12 +43,12 @@ int main ( int argc,  char **argv ) {
     
     /* Obtaining numer of lines of 
      * file containing k values*/
-    
-    sprintf( cmd," wc -l < ./%s", file );
+  
+    sprintf( cmd," wc -l < ./%s", file2 );
     f = popen( cmd,"r" );
     char path2[100];
     
-    while ( fgets(path2, sizeof(path2)-1, f ) != NULL) {
+    while ( fgets(path2, sizeof(path2)-1, f) != NULL) {
         
             printf("\nLines in k input file: %s\n", path2);
             nk = atoi(path2)-1;
@@ -81,15 +81,11 @@ int main ( int argc,  char **argv ) {
         fprintf ( fl,"%lf %lf\n", ki[i], pki );
         
     }
+    printf("Interpolation performed\n\n");
     
-    
-    i =10;
-    pki = gsl_spline_eval ( spline, ki[i], acc );
-    printf ( "%lf %lf\n", ki[i], pki );
-        
+    // Realising memory 
     gsl_spline_free (spline);
     gsl_interp_accel_free (acc);
 
-        
     return 0;
     }
