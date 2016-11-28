@@ -24,7 +24,7 @@ int main ( int argc,  char **argv ) {
 
     while ( fgets(path, sizeof(path)-1, f ) != NULL) {
             printf("\nLines in ascci input file: %s\n", path);
-            size = atoi(path)-1;
+            size = atoi(path);
     }
     
     pclose(f);
@@ -51,7 +51,7 @@ int main ( int argc,  char **argv ) {
     while ( fgets(path2, sizeof(path2)-1, f) != NULL) {
         
             printf("\nLines in k input file: %s\n", path2);
-            nk = atoi(path2)-1;
+            nk = atoi(path2);
     }
     pclose(f);
     

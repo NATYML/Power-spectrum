@@ -1,4 +1,3 @@
-
 CC = gcc
 CFLAGS = -g -I. -c
 LFLAGS =  -lgsl -lgslcblas -lz -lm

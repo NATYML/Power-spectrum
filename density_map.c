@@ -204,7 +204,7 @@ double Mass_assignment(  ){
 				}
 					
 		}
-		if (pos==100) printf("Here\n");	
+			
                 if( (parts[i].mp - temp) < 0 ){ printf("Problem: part id %d Mp %lf Mcells %lf Mass cc%lf\n",i,parts[i].mp,temp,cells[index[0]].mc);getchar(); }
 		
 	}
