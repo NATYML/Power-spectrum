@@ -12,7 +12,7 @@
 #define J 2
 #define K 3
 /*-------------------------*/
-double k_max_i;
+double k_max;
 
 /********************Structures************************/
 
