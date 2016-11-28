@@ -135,7 +135,6 @@ double Mass_assignment(  ){
 	        locate_cell( parts[i].xp, parts[i].yp, parts[i].zp, index );
 	
 	        //Nearest grid point scheme
-	       
 	        cells[index[0]].mngp = cells[index[0]].mngp + parts[i].mp;	
 		  
 	       	
@@ -170,11 +169,9 @@ double Mass_assignment(  ){
 		#endif 
 	
 		//Contribution to the cells mass to due to particle that falls in 
-		//cells[index[0]].mc = cells[index[0]].mc + W*parts[i].mp;	
 		cells[index[0]].mc = cells[index[0]].mc + Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp;		
                 //printf("%lf\n",cells[index[0]].mc);
 		
-		//if (i==86328043) printf("%lf %lf %lf \n",Wx[CENTER],Wy[CENTER],Wz[CENTER]);
 		temp = 0;
 		//Neighbour cells	
 		for ( p = 0; p <3; p++ ){
@@ -202,13 +199,12 @@ double Mass_assignment(  ){
 							pos = ( i0*PRM.Nc + j0 )*PRM.Nc + k0;
 							cells[pos].mc = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].mc;   					                                    
 							temp = temp +  Wx[p]*Wy[q]*Wz[r]*parts[i].mp;
-							//if (i==86328043) {printf("%lf %lf %lf \n",Wx[p],Wy[q],Wz[r]);}
 							//if (Wx[p]*Wy[q]*Wz[r]>0 ) printf(" %lf  \n",Wx[p]*Wy[q]*Wz[r] );   
 				   		}
 				}
 					
 		}
-			
+		if (pos==100) printf("Here\n");	
                 if( (parts[i].mp - temp) < 0 ){ printf("Problem: part id %d Mp %lf Mcells %lf Mass cc%lf\n",i,parts[i].mp,temp,cells[index[0]].mc);getchar(); }
 		
 	}
@@ -216,7 +212,7 @@ double Mass_assignment(  ){
 	//Test for cloud in cell
 	#ifdef TEST_CIC 
 	mt_cells=0;
-        for( k=0; k<PRM.Nc*PRM.Nc*PRM.Nc;k++ ) mt_cells = mt_cells + cells[k].mngp; 
+        for( k=0; k<PRM.Nc*PRM.Nc*PRM.Nc;k++ ) mt_cells = mt_cells + cells[k].mc; 
  		printf("Cells total mass %lf \t Part total mass %lf \n\n", mt_cells, mt_part );
 		printf("Relative Error Mass cells %e\n",fabs(mt_cells-mt_part)/mt_part);	
 	#endif
@@ -245,7 +241,11 @@ int density_contrast( double mt_part ){
    
     #ifdef NGP
       cells[i].den_con = (cells[i].mngp/PRM.vcell)/bck_den - 1.0;	
-    #else
+     #endif 
+    #ifdef CIC
+      cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	 
+    #endif  
+    #ifdef TSC
       cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	 
     #endif  
 
