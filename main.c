@@ -102,9 +102,7 @@ int main( int argc, char *argv[] ){
         double kf = 2.0*M_PI/PRM.Lbox;
         PRM.deltak = 0.5*kf;
         PRM.kmin = PRM.deltak;//0.5*PRM.deltak;
-	printf("%lf\n",PRM.deltak);
-	getchar();
-        PRM.Nbins = (int) ceil( k_max/PRM.deltak );
+	PRM.Nbins = (int) ceil( k_max/PRM.deltak );
 	mean = calloc((size_t) PRM.Nbins,sizeof(double));
 
 	//Calculating the power spectrum

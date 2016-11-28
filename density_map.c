@@ -140,10 +140,10 @@ double Mass_assignment(  ){
 		  
 	       	
 	        //Initializing window functions	
-	        //for ( l = 0; l < 3; l++){ Wx[l]=0; Wy[l]=0; Wz[l]=0; }	
+	        for ( l = 0; l < 3; l++){ Wx[l]=0; Wy[l]=0; Wz[l]=0; }	
 		
 		/* Cell center */
-		/*	Xc = cells[index[0]].xc + PRM.deltax*0.5;
+		Xc = cells[index[0]].xc + PRM.deltax*0.5;
 		Yc = cells[index[0]].yc + PRM.deltax*0.5;
 		Zc = cells[index[0]].zc + PRM.deltax*0.5;
       	
@@ -154,11 +154,7 @@ double Mass_assignment(  ){
 	
 		#ifdef CIC 
 		{
-		  if(i == 86328043){
-		  printf("Wx %lf\n",  1 - fabs(parts[i].xp - Xc)/PRM.deltax);
-		  printf("Wy %lf\n",  1 - fabs(parts[i].yp - Yc)/PRM.deltax);
-		  printf("Wz %lf\n",  1 - fabs(parts[i].zp - Zc)/PRM.deltax);
-		  }
+		 
 		CIC_Wfunction( parts[i].xp - Xc, Wx );
 		CIC_Wfunction( parts[i].yp - Yc, Wy ); 
 		CIC_Wfunction( parts[i].zp - Zc, Wz );
@@ -176,7 +172,7 @@ double Mass_assignment(  ){
 		//Contribution to the cells mass to due to particle that falls in 
 		//cells[index[0]].mc = cells[index[0]].mc + W*parts[i].mp;	
 		cells[index[0]].mc = cells[index[0]].mc + Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp;		
-
+                //printf("%lf\n",cells[index[0]].mc);
 		
 		//if (i==86328043) printf("%lf %lf %lf \n",Wx[CENTER],Wy[CENTER],Wz[CENTER]);
 		temp = 0;
@@ -207,14 +203,14 @@ double Mass_assignment(  ){
 							cells[pos].mc = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].mc;   					                                    
 							temp = temp +  Wx[p]*Wy[q]*Wz[r]*parts[i].mp;
 							//if (i==86328043) {printf("%lf %lf %lf \n",Wx[p],Wy[q],Wz[r]);}
-							   
+							//if (Wx[p]*Wy[q]*Wz[r]>0 ) printf(" %lf  \n",Wx[p]*Wy[q]*Wz[r] );   
 				   		}
 				}
 					
 		}
 			
-            	if( (parts[i].mp - temp) < 0 ){printf("Problem: part %d %lf %lf\n",i,parts[i].mp,temp);getchar();}
-		*/
+                if( (parts[i].mp - temp) < 0 ){ printf("Problem: part id %d Mp %lf Mcells %lf Mass cc%lf\n",i,parts[i].mp,temp,cells[index[0]].mc);getchar(); }
+		
 	}
 	
 	//Test for cloud in cell
@@ -251,7 +247,6 @@ int density_contrast( double mt_part ){
       cells[i].den_con = (cells[i].mngp/PRM.vcell)/bck_den - 1.0;	
     #else
       cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	 
-      printf("problem \n");
     #endif  
 
   } 
