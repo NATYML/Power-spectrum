@@ -1,1 +1,1 @@
-plot "all_data_CIC.dat" u 1:($4/$2) title "pop 1e11/simul", "all_data_CIC.dat" u 1:($6/$2) title "pop 1e12/simul", "all_data_CIC.dat" u 1:($8/$2) title "pop 1e13/simul"
+plot "all_data_CIC.dat" u 1:($4/$2)  w p pt 7 ps 0.5  title "pop 1e11/simul" , "all_data_CIC.dat" u 1:($6/$2)  w p pt 7 ps 0.5 title "pop 1e12/simul", "all_data_CIC.dat" u 1:($8/$2)  w p pt 7 ps 0.5  title "pop 1e13/simul"

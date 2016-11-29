@@ -38,7 +38,7 @@ int main( int argc, char *argv[] ){
 
 		while (fgets(path, sizeof(path)-1, f) != NULL) {
 		     printf("\n\nLines in ascci input file: %s", path);
-		     PRM.Npart = atoi(path)-1;
+		     PRM.Npart = atoi(path);
 		}
 		
 		pclose(f);
@@ -66,7 +66,10 @@ int main( int argc, char *argv[] ){
 	fcells = (struct FCell *)calloc((size_t) PRM.NcTot, sizeof( struct FCell) );
 	if(fcells==NULL){printf("Fcells structure not allocated\n");exit(0);}
 	
-	printf( "\n\n******************************** CIC  *********************************\n\n" ); 
+	printf("\n%s read\n",filename);
+	printf("\n Lbox %0.1f Npart %d Ncells %d \n",PRM.Lbox, PRM.Npart, PRM.Nc);
+	
+	printf( "\n\n******************************** Mass Assignment  *********************************\n\n" ); 
 
 	//The cells are created 		
 	Grid( );    

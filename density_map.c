@@ -125,6 +125,13 @@ double Mass_assignment(  ){
 	int i0, j0, k0, counter[3] = {-1,0,1};
 	double Xc, Yc, Zc, dx, dy, dz;
 	double Wx[3],Wy[3],Wz[3],mt_cells,mt_part= 0;
+        
+        #ifdef CIC 
+		 printf("CIC scheme chost \n\n");   
+        #endif 
+        #ifdef TSC
+                 printf("TSC scheme chost \n\n");   
+        #endif           
 	
 	double temp;
  	for ( i = 0; i < PRM.Npart; i++){					
@@ -161,10 +168,12 @@ double Mass_assignment(  ){
 		}
 		#endif
 		#ifdef TSC 
-		{	
+		{
+                    
 		TSC_Wfunction( parts[i].xp - Xc, Wx );
 		TSC_Wfunction( parts[i].yp - Yc, Wy ); 
 		TSC_Wfunction( parts[i].zp - Zc, Wz );
+                
 		}
 		#endif 
 	
@@ -205,12 +214,15 @@ double Mass_assignment(  ){
 					
 		}
 			
-                if( (parts[i].mp - temp) < 0 ){ printf("Problem: part id %d Mp %lf Mcells %lf Mass cc%lf\n",i,parts[i].mp,temp,cells[index[0]].mc);getchar(); }
+                //if( (parts[i].mp - temp) < 0 ){ printf("Problem: part id %d Mp %lf Mcells %lf Mass cc%lf\n",i,parts[i].mp,temp,cells[index[0]].mc);getchar(); }
+                double borr;
+                borr = Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp + temp;
+                if( fabs(parts[i].mp - borr) > 1e-4 ){ printf("More mass! \n"); getchar(); }
 		
 	}
 	
 	//Test for cloud in cell
-	#ifdef TEST_CIC 
+	#ifdef TEST_MASS 
 	mt_cells=0;
         for( k=0; k<PRM.Nc*PRM.Nc*PRM.Nc;k++ ) mt_cells = mt_cells + cells[k].mc; 
  		printf("Cells total mass %lf \t Part total mass %lf \n\n", mt_cells, mt_part );
