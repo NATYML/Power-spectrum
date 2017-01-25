@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -g -I. -c
-LFLAGS =  -lgsl -lgslcblas -lz -lm
+CFLAGS = -g -I. -c -I/home/nataly/local/include/ 
+LFLAGS = -L/home/nataly/local/lib -lgsl -lgslcblas -lfftw3 -lz -lm
 MODULES = interp.o 
 
 PROGRAMS = interp.out 

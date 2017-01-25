@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-//#include <gsl/gsl_errno.h>
-//#include <gsl/gsl_spline.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_spline.h>
 
 
 int main ( int argc,  char **argv ) {
