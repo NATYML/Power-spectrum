@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_spline.h>
+//#include <gsl/gsl_errno.h>
+//#include <gsl/gsl_spline.h>
 
 
 int main ( int argc,  char **argv ) {
@@ -73,7 +73,7 @@ int main ( int argc,  char **argv ) {
     gsl_spline_init ( spline, k, pk, size );
 
     /* Writing interpolated values*/
-    fl = fopen( "pk.dat","w" );
+    fl = fopen( "pk_interp.dat","w" );
     
     for ( i = 0; i < nk; i++ ){
     
