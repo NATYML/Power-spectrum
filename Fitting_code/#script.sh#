@@ -1,0 +1,5 @@
+make clean
+make
+#case   in
+*)
+  ./fit.out ../../output_files/PS_TSC_1e11.dat > pk.dat
