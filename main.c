@@ -103,8 +103,8 @@ int main( int argc, char *argv[] ){
         //Mean of contrast density module  
 	double *mean;
         double kf = 2.0*M_PI/PRM.Lbox;
-        PRM.deltak = 0.5*kf;
-        PRM.kmin = PRM.deltak;//0.5*PRM.deltak;
+        PRM.deltak = 0.25*kf;
+        PRM.kmin = 0.5*kf;//PRM.deltak;
 	PRM.Nbins = (int) ceil( k_max/PRM.deltak );
 	mean = calloc((size_t) PRM.Nbins,sizeof(double));
 
