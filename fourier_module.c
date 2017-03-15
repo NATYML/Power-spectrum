@@ -321,6 +321,7 @@ int Modes_FS( double *mean ){
      
   double kmax, kmin;
   kmin = PRM.kmin;
+  printf("KMIN %d\n\n",kmin);
  
   for( k=0; k<PRM.Nbins; k++  ){
      
