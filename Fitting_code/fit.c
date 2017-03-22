@@ -91,6 +91,7 @@ int main (  int argc, char *argv[]  ){
     double deltax = (xmax-xmin)/(1.0*LEN);
     double porc[LEN], chi2[LEN];
     
+    
     for ( cont = 0; cont< LEN; cont++){
         
                 //printf( "ITER %d\n\n",cont);   
@@ -110,7 +111,7 @@ int main (  int argc, char *argv[]  ){
                     //printf( "%f %f %d\n", k[i], Pk[i] ,value);
                     
                 }
-             
+                
                 /* use uniform breakpoints on [kmin, kmax] */
                 gsl_bspline_knots_uniform( k[0], k[N-1], bw );
 
@@ -130,7 +131,7 @@ int main (  int argc, char *argv[]  ){
                         gsl_matrix_set( X, i, j, Bj );
                     }
                 }
-
+                
                 /* do the fit */
                 gsl_multifit_wlinear( X, w, y, c, cov, &chisq, mw );
 
@@ -170,6 +171,7 @@ int main (  int argc, char *argv[]  ){
                 printf("\n w %lf xi2 %lf  \n",  (porc[cont]+1), chi2[cont]);
                 
                 fclose(pt);
+                
     }          
     
     double minvalue = chi2[0];
