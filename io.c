@@ -1,4 +1,4 @@
-    #include "allvars.h"
+#include "allvars.h"
 
 /*************************************************************************
  NAME:       conf2dump
@@ -285,7 +285,7 @@ int read_HDF5( char *filename ){
 
 	dim[0]=1,dim[1]=3;
 	//Determines how many blocks to select from the 
-	//dataspace, in ea	ch dimension
+	//dataspace, in each dimension
 	count[0]=1,count[1]=3;
 	//Steps beteween two elements
 	stride[0]=1,stride[1]=1;
@@ -301,8 +301,8 @@ int read_HDF5( char *filename ){
 	  printf("can't open file `%s`\n\n", box_filename);
 	  exit(0);
 	}
-	file_id = H5Fopen(box_filename, H5F_ACC_RDONLY, H5P_DEFAULT);
-	
+	file_id = H5Fopen(box_filename, H5F_ACC_RDONLY, H5P_DEFAULT);	
+
 	root = H5Gopen(file_id, "Header",H5P_DEFAULT);
 
 	//Reading total particle number
@@ -328,8 +328,9 @@ int read_HDF5( char *filename ){
 	status = H5Aread(att,H5T_NATIVE_INT,&dumb0 );
 
 	PRM.Nfiles = dumb0;
-
+	
 	j = 0;
+
 	for ( counter = 0; counter < PRM.Nfiles; counter++ ){	
 
 		if (counter != 0){
@@ -337,7 +338,7 @@ int read_HDF5( char *filename ){
 		   file_id = H5Fopen(box_filename, H5F_ACC_RDONLY, H5P_DEFAULT);
 		   root = H5Gopen(file_id, "Header",H5P_DEFAULT);
 		   }
-
+		
 		//Reading Particles in this file
 		att = H5Aopen(root,"NumPart_ThisFile", H5P_DEFAULT); 
 		status = H5Aread( att,H5T_NATIVE_INT,dumb2 );
@@ -354,6 +355,7 @@ int read_HDF5( char *filename ){
 					   
 		memspace_id = H5Screate_simple(rank, dim, NULL); 
 		dataspace_id = H5Dget_space (dataset_id);
+		
 		
 		for ( i = 0; i < dumb2[1]; i++ ){	
 			
@@ -383,7 +385,7 @@ int read_HDF5( char *filename ){
 		status = H5Fclose(file_id);	
 		
    } 
-       
+
 return 0;	
 }
 
