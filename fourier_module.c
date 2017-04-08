@@ -116,7 +116,7 @@ int RTC( fftw_complex *FT_cd ){
     fftw_plan plan;
     //Density contrast array                                                                                                                  
     double *in;
-    in = calloc((size_t)PRM.NcTot,sizeof(double));
+    in = (double *)calloc((size_t)PRM.NcTot,sizeof(double));
     int pos, i, j, k;
 
     //Creating plan                                                                                                                           
@@ -258,11 +258,11 @@ int CTR( fftw_complex *FT_cd ){
 
 int FS_Grid( fftw_complex *FT_cd ){
 
-  int p,q,i,j,k,N_cell;
-  int a,b,c,Temp;
+  int i,j,k,N_cell;
+  
   //int dumb = (floor(PRM.Nc/2)+1)*PRM.Nc*PRM.Nc;
 
-  k_max = 0;
+  g_k_max = 0;
   //Filling Structure with kx, ky, kz and density contrast k 
   for (i = 0; i < PRM.Nc; i++){
         for ( j = 0; j < PRM.Nc; j++){
@@ -291,7 +291,7 @@ int FS_Grid( fftw_complex *FT_cd ){
                                           fcells[N_cell].ky*fcells[N_cell].ky +
                                           fcells[N_cell].kz*fcells[N_cell].kz );
  
-		if ( fcells[N_cell].k > k_max ){ k_max =  fcells[N_cell].k;}
+		if ( fcells[N_cell].k > g_k_max ){ g_k_max =  fcells[N_cell].k;}
 
                 fcells[N_cell].r_dconk = FT_cd[N_cell][0];  
                 fcells[N_cell].i_dconk = FT_cd[N_cell][1]; 
@@ -317,8 +317,7 @@ int Modes_FS( double *mean ){
   int i, k, counter;
   double ps_norm = (1.0*PRM.Lbox*PRM.Lbox*PRM.Lbox)/pow(1.0*PRM.Nc,6);
   double shotnoise = PRM.vcell/(1.0*PRM.Npart);
-  int *Length;
-     
+      
   double kmax, kmin;
   kmin = PRM.kmin;
  

@@ -105,8 +105,8 @@ int main( int argc, char *argv[] ){
         double kf = 2.0*M_PI/PRM.Lbox;
         PRM.deltak = 0.5*kf;
         PRM.kmin = 0.5*kf;//PRM.deltak;
-	PRM.Nbins = (int) ceil( k_max/PRM.deltak );
-	mean = calloc((size_t) PRM.Nbins,sizeof(double));
+	PRM.Nbins = (int) ceil( g_k_max/PRM.deltak );
+	mean = (double *)calloc((size_t) PRM.Nbins,sizeof(double));
 
 	printf("\n kmin %lf deltak %lf Nbins %d\n\n",PRM.kmin,PRM.deltak,PRM.Nbins);
 

@@ -206,11 +206,10 @@ int read_binary( char *filename ){
 
 int read_ascci( char *filename ){
   
-  int idumb, ihalo;
+  int ihalo;
   long int i;
   double dumb;
   FILE *pt=NULL;
-  char string[100];
   
   //Open the data file  	
   if(!(pt = fopen( filename, "r" ))){
@@ -269,7 +268,7 @@ int read_ascci( char *filename ){
  			 Parameter array 
  RETURN:     0
 **************************************************************************/ 
-
+/*
 int read_HDF5( char *filename ){
 
 	FILE *file = NULL;
@@ -279,7 +278,7 @@ int read_HDF5( char *filename ){
 	int dumb,dumb1[6],dumb2[6],dumb0;
 
 	hsize_t dim[2],count[2],offset[2],stride[2],block[2];
-	hsize_t memspace_id, dataspace_id, dset_id;
+	hsize_t memspace_id, dataspace_id;
 	hid_t att, root, file_id, dataset_id;
 	herr_t status;
 
@@ -389,7 +388,7 @@ int read_HDF5( char *filename ){
 return 0;	
 }
 
-
+*/
 /*************************************************************************
  NAME:       write_DField
  FUNCTION:   Writes density field obtained from CIC algorithm 
@@ -474,7 +473,6 @@ int Write_FT(  ){
 				
 int Write_PS( double *mean ){
   
-	int N_celda; 
 	FILE *fp;
 	int n;
 	char file[80];

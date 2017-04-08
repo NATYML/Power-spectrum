@@ -1,3 +1,7 @@
+#ifndef ALLVARS_H
+#include "allvars.h"
+#endif
+
 // IO Module
 int conf2dump( char *);
 int read_parameters( float *, char *);

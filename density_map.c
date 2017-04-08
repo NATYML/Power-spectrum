@@ -10,14 +10,15 @@
 int Grid( ){
 
 int i, j, k, N_cell;
+int Niter = PRM.Nc;
 
-for ( i = 0; i < PRM.Nc; i++){
+for ( i = 0; i < Niter; i++){
 
-	for ( j = 0; j < PRM.Nc; j++){
-		for ( k = 0; k< PRM.Nc;k++){
+	for ( j = 0; j < Niter; j++){
+		for ( k = 0; k< Niter;k++){
 
 			//index
-			N_cell = k+PRM.Nc*(j+PRM.Nc*i);
+			N_cell = k+Niter*(j+Niter*i);
 
 			cells[N_cell].xc = i*PRM.deltax;
 			cells[N_cell].yc = j*PRM.deltax;
@@ -123,7 +124,7 @@ double Mass_assignment(  ){
 	
 	int i, l, k, p, q, r, pos, index[4];
 	int i0, j0, k0, counter[3] = {-1,0,1};
-	double Xc, Yc, Zc, dx, dy, dz;
+	double Xc, Yc, Zc;
 	double Wx[3],Wy[3],Wz[3],mt_cells,mt_part= 0;
         
         #ifdef CIC 

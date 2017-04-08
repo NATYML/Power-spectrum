@@ -1,3 +1,5 @@
+#ifndef ALLVARS_H
+#define ALLVARS_H
 
 /**********************Macros**************************/
 
@@ -12,20 +14,20 @@
 #define J 2
 #define K 3
 /*-------------------------*/
-double k_max;
+extern double g_k_max;
 
 /********************Structures************************/
 
-struct Particle{
+extern struct Particle{
 	
 	double xp;
 	double yp;
 	double zp;
 	double mp;
 
-}*parts;
+}*parts;    
   
-struct Cell{
+extern struct Cell{
 
 	double xc;
 	double yc;
@@ -36,7 +38,7 @@ struct Cell{
 
 }*cells;
 
-struct FCell{
+extern struct FCell{
 	
 	double kx;
 	double ky;
@@ -48,7 +50,7 @@ struct FCell{
 
 }*fcells;
 
-struct param{
+extern struct param{
 
 	double Lbox;
 	int Nfiles;
@@ -63,7 +65,7 @@ struct param{
 
 }PRM;
 
-struct gadget_header{
+extern struct gadget_header{
 
 	  int npart[6];
 	  double mass[6];
@@ -80,7 +82,8 @@ struct gadget_header{
 	  double HubbleParam;
 	  char fill[256 - 6 * 4 - 6 * 8 - 2 * 8 - 2 * 4 - 6 * 4 - 2 * 4 - 4 * 8];	/* fills to 256 Bytes */
 
-} header;
+}header;
+
 
 /********************Libraries Used********************/
 #include<stdlib.h>
@@ -92,4 +95,6 @@ struct gadget_header{
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_statistics.h>
 #include <time.h>
-#include "hdf5.h"
+//#include "hdf5.h"
+
+#endif 
