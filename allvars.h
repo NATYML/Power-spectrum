@@ -97,6 +97,7 @@ extern struct gadget_header{
 #include <gsl/gsl_statistics.h>
 #include <time.h>
 //#include "hdf5.h"
-#include "/home/nataly/Programs/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
+//#include "/home/nataly/Programs/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
+#include "/home/nataly/local/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
 
 #endif 
