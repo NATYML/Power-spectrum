@@ -7,6 +7,7 @@ int conf2dump( char *);
 int read_parameters( float *, char *);
 int read_ascci( char * );
 int read_binary( char * );
+int read_FOF_PART( char * );
 int read_HDF5( char * );
 int write_DField( );
 int Write_FT( );

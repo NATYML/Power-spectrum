@@ -44,12 +44,21 @@ int main( int argc, char *argv[] ){
 		pclose(f);
 		read_ascci( filename );
 	#endif  
+        #ifdef FOF_PART
+             
+             PRM.Lbox = prm[L];
+             PRM.Npart = prm[NP]*prm[NP]*prm[NP];
+             read_FOF_PART( filename );   
+        #endif
+        exit(0); 
 		
 	//Parameters 		
 	PRM.Nc = prm[N];
 	PRM.deltax = PRM.Lbox/(1.0*PRM.Nc);
 	PRM.vcell = PRM.deltax*PRM.deltax*PRM.deltax;
 	PRM.NcTot = PRM.Nc*PRM.Nc*PRM.Nc;
+        
+        
 	//Size Out array FFTW  
 	//int dumb = floor(PRM.Nc/2)+1;
 	// FFTW array   
@@ -67,7 +76,7 @@ int main( int argc, char *argv[] ){
 	if(fcells==NULL){printf("Fcells structure not allocated\n");exit(0);}
 	
 	printf("\n%s read\n",filename);
-	printf("\n Lbox %0.1f Npart %d Ncells %d \n",PRM.Lbox, PRM.Npart, PRM.Nc);
+	printf("\n Lbox %0.1f Npart %ld Ncells %d \n",PRM.Lbox, PRM.Npart, PRM.Nc);
 	
 	printf( "\n\n******************************** Mass Assignment  *********************************\n\n" ); 
 
@@ -127,6 +136,7 @@ int main( int argc, char *argv[] ){
 	t = clock() - t;
         time_taken = ((double)t)/CLOCKS_PER_SEC;
         printf("Time %f\n",time_taken/60);
+        
   
 return 0;
 }

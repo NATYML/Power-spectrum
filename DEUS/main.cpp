@@ -13,13 +13,18 @@ int main(void)
     << "area: (" << cube.minX() << "," << cube.minY() << "," << cube.minZ() << ") "
     << "to (" << cube.maxX() << "," << cube.maxY() << "," << cube.maxZ() << ")"
     << std::endl;
-   for(int j=0; j< std::max(10,cube.npart()); j++) {
+    /*for(int j=0; j< std::max(1,cube.npart()); j++) {
     std::cout <<   j << " "
     //<< "id: " << cube.id(j) << " "
     <<  cube.posX(j) << " " << cube.posY(j) << " " << cube.posZ(j) 
     //<< "velocity (" << cube.velX(j) << "," << cube.velY(j) << "," << cube.velZ(j) << ")"
     << std::endl;
-    }
+    }*/
+   for(int j=0; j< cube.npart(); j++) {
+   
+        printf( "%d %lf %lf %lf \n ", cube.posX(j), cube.posY(j), cube.posZ(j) );
+       
+   }
     
 return 0;
 }

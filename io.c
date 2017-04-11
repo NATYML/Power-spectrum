@@ -34,7 +34,7 @@ int read_parameters( float parameters[], char filename[] ) {
     //Load of File
     file = fopen( filename, "r" );
     if( file==NULL ){
-		printf( "  * The file '%s' don't exist!\n", filename );
+		printf( "  * The file '%s' doesn't exist!\n", filename );
 		exit(0);
 		}
     fclose(file);
@@ -48,13 +48,12 @@ int read_parameters( float parameters[], char filename[] ) {
     while( getc( file ) != EOF ){
 	fscanf( file, "%f", &parameters[i] );
 	i++;}
-    
-    fclose( file );
+     fclose( file );
     
     //printf( "  * The file '%s' has been loaded!\n", filename );
 
-    sprintf( cmd, "rm -rf %s.dump", filename );
-    system( cmd );
+    //sprintf( cmd, "rm -rf %s.dump", filename );
+    //system( cmd );
     
     return 0;
 }
@@ -220,12 +219,11 @@ int read_ascci( char *filename ){
   printf( "\n\n************************** Reading Ascci  ****************************\n" );
    
   parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) ); 
-  if( parts==NULL ){printf("Particles structure could not be allocated \n");exit(0);}
-  /*
-  for(i=0; i<PRM.Npart; i++ ){
-    fscanf( pt,"%lf %lf %lf %lf",&parts[i].xp, &parts[i].yp, &parts[i].zp, &parts[i].mp );  
-  }*/
-  
+  if( parts==NULL ){
+      printf("Particles structure could not be allocated \n");
+      exit(0);
+}
+
   //fscanf(pt,"%s",string);  
   for( i=0; i<PRM.Npart; i++ ){   
     fscanf( pt,"%d%*[,] %lf%*[,] %lf%*[,] %lf%*[,] %lf%*[,] %lf",&ihalo, &parts[i].xp, &parts[i].yp, &parts[i].zp, &parts[i].mp, &dumb);  
@@ -234,17 +232,7 @@ int read_ascci( char *filename ){
   if (parts[i].xp<0 ||parts[i].yp<0||parts[i].zp<0) printf("NEGATIVE VALUE\n");    
   }
   
-  /*  for(i=PRM.Npart-10; i<PRM.Npart; i++ ){
-    printf("%d %lf %lf %lf %lf %lf\n",ihalo, parts[i].xp, parts[i].yp, parts[i].zp, parts[i].mp, dumb);
-  }
-  getchar();
-  */
-  //printf("%d %lf %lf %lf %lf %lf\n",ihalo, parts[i-1].xp, parts[i-1].yp, parts[i-1].zp, parts[i-1].mp, dumb);
-  
-  /*
-  parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) ); 
-  if(parts==NULL){printf("Particles structure could not be allocated \n");exit(0);}
-    
+  /*  
   for(i=0; i<PRM.Npart; i++ ){		
     
     fscanf(pt,"%d %lf %lf %lf %lf %lf %lf %d %lf %lf\n",
@@ -261,6 +249,47 @@ int read_ascci( char *filename ){
   return 0;
 }
 
+/*************************************************************************
+ NAME:       read_ascci
+ FUNCTION:   Read ascci file
+ INPUTS:     Filename of parameter file 
+ 			 Number of particles variable 
+ RETURN:     0
+**************************************************************************/ 
+
+int read_FOF_PART( char *filename ){
+
+    int i, j;
+    long int num;
+    num = 8589934592;
+    
+    //parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) );
+    parts = (struct Particle *)calloc( (size_t) num, sizeof( struct Particle) ); 
+
+    if( parts==NULL ){
+        printf("Particles structure could not be allocated \n");
+        exit(0);
+    }
+    
+    j = 0; 
+    
+    //FOFCube cube(filename, true);  
+    
+   // for( i=0; i<PRM.Npart; i++ ){ 
+     /*for( i=j; i< cube.npart(); i++ ){ 
+         
+         printf("%lf %lf %lf\n",cube.posX(i),cube.posY(i),cube.posZ(i));
+         exit(0);
+         parts[i].xp = cube.posX(i);
+         parts[i].yp = cube.posY(i); 
+         parts[i].zp = cube.posZ(i);            
+        
+         
+    }*/
+    j = i;
+    
+ return 0;   
+}   
 /*************************************************************************
  NAME:       read_HDF5
  FUNCTION:   Read a HDF5 snapshot 
@@ -412,7 +441,7 @@ int write_DField( ){
 	fprintf( fp, "#mass($10^{12}M_{sun}$) \n ");
 
 	//Some parameters are stored
-	fprintf( fp, "%d %lf\n%lf %d\n", 
+	fprintf( fp, "%d %lf\n%lf %ld\n", 
 		     PRM.Nc, PRM.Lbox, PRM.deltax, PRM.Npart );
 
 	//Position and mass assigned is stored per cell

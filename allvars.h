@@ -8,6 +8,7 @@
 /*-------------------------*/ 
 #define N 0
 #define L 1
+#define NP 2
 
 #define CENTER 1 
 #define I 1
@@ -54,7 +55,7 @@ extern struct param{
 
 	double Lbox;
 	int Nfiles;
-	int Npart;
+	long int Npart;
 	int Nc;
 	int Nbins;
 	int NcTot;
@@ -96,5 +97,6 @@ extern struct gadget_header{
 #include <gsl/gsl_statistics.h>
 #include <time.h>
 //#include "hdf5.h"
+#include "/home/nataly/Programs/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
 
 #endif 
