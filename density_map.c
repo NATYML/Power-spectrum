@@ -143,7 +143,7 @@ double Mass_assignment(  ){
 	        locate_cell( parts[i].xp, parts[i].yp, parts[i].zp, index );
 	
 	        //Nearest grid point scheme
-	        cells[index[0]].mngp = cells[index[0]].mngp + parts[i].mp;	
+	        //cells[index[0]].mngp = cells[index[0]].mngp + parts[i].mp;	
 		  
 	       	
 	        //Initializing window functions	
@@ -250,11 +250,10 @@ int density_contrast( double mt_part ){
     
   //Density contrast 
   for(i= 0; i<PRM.NcTot; i++ ){
-
    
-    #ifdef NGP
-      cells[i].den_con = (cells[i].mngp/PRM.vcell)/bck_den - 1.0;	
-     #endif 
+    //#ifdef NGP
+    //cells[i].den_con = (cells[i].mngp/PRM.vcell)/bck_den - 1.0;	
+    // #endif 
     #ifdef CIC
       cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	 
     #endif  

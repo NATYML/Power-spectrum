@@ -9,7 +9,7 @@ OPT += -DFOF_PART
 OPT += -DTSC
 		# Routines tests
 OPT += -DTEST_MASS
-OPT += -DTEST_FT
+#OPT += -DTEST_FT
 
 
 CC = g++

@@ -9,6 +9,8 @@
 #define N 0
 #define L 1
 #define NP 2
+#define NF 3
+#define MASS 4
 
 #define CENTER 1 
 #define I 1
@@ -34,7 +36,7 @@ extern struct Cell{
 	double yc;
 	double zc;
 	double mc;
-	double mngp;
+        //double mngp;
 	double den_con;
 
 }*cells;
@@ -54,7 +56,7 @@ extern struct FCell{
 extern struct param{
 
 	double Lbox;
-	int Nfiles;
+        int Nfiles;
 	long int Npart;
 	int Nc;
 	int Nbins;
@@ -63,6 +65,7 @@ extern struct param{
 	double vcell;
 	double deltak;
 	double kmin;
+        double global_mass;
 
 }PRM;
 

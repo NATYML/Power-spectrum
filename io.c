@@ -93,7 +93,7 @@ int read_binary( char *filename ){
 	N_tot = header.npartTotal[1];
 	printf("Type %d particles have Npart=%12d NpartTotal=%12d with mass %16.8lf\n", 1,
 	    	    header.npart[1], header.npartTotal[1], header.mass[1]);
-
+	
 	PRM.Npart = N_tot;
 
 	printf(" * Redshift... %16.8f\n",header.redshift);
@@ -250,44 +250,64 @@ int read_ascci( char *filename ){
 }
 
 /*************************************************************************
- NAME:       read_ascci
- FUNCTION:   Read ascci file
+ NAME:       read_FOF_PART
+ FUNCTION:   Read FOF particles file
  INPUTS:     Filename of parameter file 
- 			 Number of particles variable 
  RETURN:     0
 **************************************************************************/ 
 
 int read_FOF_PART( char *filename ){
 
-    int i, j;
-    long int num;
-    num = 8589934592;
+   int i,k;
+   long int j;
+   char filename1[100],zeros[10];
+   
+   printf("Npart %ld\n",PRM.Npart); 
+   parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) );
+   if( parts==NULL ){
+       printf("Particles structure could not be allocated \n");
+       exit(0);
+   }
+   
+   //Reading first sub_box
+   sprintf(filename1,"%s_00000",filename); 
+   FOFCube cube(filename1, true);  
+   j = 0;    
+   for( k=j; k< cube.npart(); k++ ){ 
     
-    //parts = (struct Particle *)calloc( (size_t) PRM.Npart, sizeof( struct Particle) );
-    parts = (struct Particle *)calloc( (size_t) num, sizeof( struct Particle) ); 
-
-    if( parts==NULL ){
-        printf("Particles structure could not be allocated \n");
-        exit(0);
-    }
-    
-    j = 0; 
-    
-    //FOFCube cube(filename, true);  
-    
-   // for( i=0; i<PRM.Npart; i++ ){ 
-     /*for( i=j; i< cube.npart(); i++ ){ 
-         
-         printf("%lf %lf %lf\n",cube.posX(i),cube.posY(i),cube.posZ(i));
-         exit(0);
-         parts[i].xp = cube.posX(i);
-         parts[i].yp = cube.posY(i); 
-         parts[i].zp = cube.posZ(i);            
+         parts[k].xp = cube.posX(k);
+         parts[k].yp = cube.posY(k); 
+         parts[k].zp = cube.posZ(k);            
+	 parts[k].mp = PRM.global_mass/1.0e10;
         
+   }   
+   
+   j += cube.npart();
+   
+   for( i=1; i< PRM.Nfiles; i++ ){  
          
-    }*/
-    j = i;
-    
+     if (i>=1 && i<10) {strcpy( zeros,"0000");}
+     else if (i >=10 && i<100 ) { strcpy( zeros,"000");}
+     else if ( i>=100 && i<1000 ) strcpy( zeros, "00");
+     else if ( i>= 1000 ) {strcpy( zeros, "0");}
+
+     sprintf(filename1,"%s_%s%d",filename,zeros,i); 
+
+     FOFCube cube(filename1, true);  
+         
+     for( k=j; k< cube.npart(); k++ ){ 
+         
+       //printf("%lf %lf %lf\n",cube.posX(k),cube.posY(k),cube.posZ(k));
+         parts[k].xp = cube.posX(k);
+         parts[k].yp = cube.posY(k); 
+         parts[k].zp = cube.posZ(k);            
+         parts[k].mp = PRM.global_mass/1.0e10;
+     }
+
+    j += cube.npart();
+
+   }
+   printf("Npart %ld\n",j);
  return 0;   
 }   
 /*************************************************************************

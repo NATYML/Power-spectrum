@@ -48,17 +48,18 @@ int main( int argc, char *argv[] ){
              
              PRM.Lbox = prm[L];
              PRM.Npart = prm[NP]*prm[NP]*prm[NP];
+	     PRM.Nfiles = prm[NF];
+	     PRM.global_mass = prm[MASS];
              read_FOF_PART( filename );   
         #endif
-        exit(0); 
+        
 		
 	//Parameters 		
-	PRM.Nc = prm[N];
+	PRM.Nc = prm[N]  ;
 	PRM.deltax = PRM.Lbox/(1.0*PRM.Nc);
 	PRM.vcell = PRM.deltax*PRM.deltax*PRM.deltax;
 	PRM.NcTot = PRM.Nc*PRM.Nc*PRM.Nc;
-        
-        
+               
 	//Size Out array FFTW  
 	//int dumb = floor(PRM.Nc/2)+1;
 	// FFTW array   
@@ -70,11 +71,7 @@ int main( int argc, char *argv[] ){
 	//Array of Structures Cells, size N^3
 	cells = (struct Cell *)calloc((size_t)PRM.NcTot, sizeof( struct Cell) );	
 	if(cells==NULL){printf("Cells structure not allocated\n");exit(0);}
-	
-	//Array of Structures FCells, size N^3 
-	fcells = (struct FCell *)calloc((size_t) PRM.NcTot, sizeof( struct FCell) );
-	if(fcells==NULL){printf("Fcells structure not allocated\n");exit(0);}
-	
+		
 	printf("\n%s read\n",filename);
 	printf("\n Lbox %0.1f Npart %ld Ncells %d \n",PRM.Lbox, PRM.Npart, PRM.Nc);
 	
@@ -90,13 +87,19 @@ int main( int argc, char *argv[] ){
 	density_contrast(mt_part);
 	
 	//Associated field stored per cell
-	write_DField( );
+	//write_DField( );
        
+        free( parts );
 	//FT contrast density
 	printf( "\n\n************************* Fourier transform ***************************\n\n" ); 
+
+		//Array of Structures FCells, size N^3 
+	fcells = (struct FCell *)calloc((size_t) PRM.NcTot, sizeof( struct FCell) );
+	if(fcells==NULL){printf("Fcells structure not allocated\n");exit(0);}
+
 	//RTC( FT_cd );	
 	CTC( FT_cd );	
-       
+        free( cells );
 		
 	//Power Spectrum
 	//Filling the k-space cells
@@ -113,7 +116,7 @@ int main( int argc, char *argv[] ){
 	double *mean;
         double kf = 2.0*M_PI/PRM.Lbox;
         PRM.deltak = 0.5*kf;
-        PRM.kmin = 0.5*kf;//PRM.deltak;
+        PRM.kmin = kf;//PRM.deltak;
 	PRM.Nbins = (int) ceil( g_k_max/PRM.deltak );
 	mean = (double *)calloc((size_t) PRM.Nbins,sizeof(double));
 
@@ -128,8 +131,6 @@ int main( int argc, char *argv[] ){
 	//Free memory
 	fftw_free( FT_cd );
 	free( fcells );
-	free( cells );
-	free( parts );
 	free( mean );
 
 	//Time taken 
@@ -139,6 +140,6 @@ int main( int argc, char *argv[] ){
         
   
 return 0;
-}
+}       
 
  
