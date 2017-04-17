@@ -45,7 +45,6 @@ int main( int argc, char *argv[] ){
 		read_ascci( filename );
 	#endif  
         #ifdef FOF_PART
-             
              PRM.Lbox = prm[L];
              PRM.Npart = prm[NP]*prm[NP]*prm[NP];
 	     PRM.Nfiles = prm[NF];
@@ -60,17 +59,12 @@ int main( int argc, char *argv[] ){
 	PRM.vcell = PRM.deltax*PRM.deltax*PRM.deltax;
 	PRM.NcTot = PRM.Nc*PRM.Nc*PRM.Nc;
                
-	//Size Out array FFTW  
-	//int dumb = floor(PRM.Nc/2)+1;
-	// FFTW array   
-	fftw_complex *FT_cd;
-	//(N/2 + 1)  positions of real FFT out array
-	//FT_cd = fftw_malloc( sizeof(fftw_complex)*PRM.Nc*PRM.Nc*dumb );
-	FT_cd = (fftw_complex *)fftw_malloc( sizeof(fftw_complex)*PRM.NcTot );
-	
 	//Array of Structures Cells, size N^3
 	cells = (struct Cell *)calloc((size_t)PRM.NcTot, sizeof( struct Cell) );	
-	if(cells==NULL){printf("Cells structure not allocated\n");exit(0);}
+	if(cells==NULL){ 
+            printf("Cells structure not allocated\n");
+            exit(0);            
+        }
 		
 	printf("\n%s read\n",filename);
 	printf("\n Lbox %0.1f Npart %ld Ncells %d \n",PRM.Lbox, PRM.Npart, PRM.Nc);
@@ -94,25 +88,36 @@ int main( int argc, char *argv[] ){
         //FT contrast density
 	printf( "\n\n************************* Fourier transform ***************************\n\n" ); 
 
-		//Array of Structures FCells, size N^3 
-	fcells = (struct FCell *)calloc((size_t) PRM.NcTot, sizeof( struct FCell) );
-	if(fcells==NULL){printf("Fcells structure not allocated\n");exit(0);}
+        //Size Out array FFTW  
+	//int dumb = floor(PRM.Nc/2)+1;
+	// FFTW array   
+	fftw_complex *FT_cd;
+	//(N/2 + 1)  positions of real FFT out array
+	//FT_cd = fftw_malloc( sizeof(fftw_complex)*PRM.Nc*PRM.Nc*dumb );
+	FT_cd = (fftw_complex *)fftw_malloc( sizeof(fftw_complex)*PRM.NcTot );
 
 	//RTC( FT_cd );	
 	CTC( FT_cd );	
-        //Free memory
-        free( cells );
-		
-	//Power Spectrum
-	//Filling the k-space cells
-	FS_Grid( FT_cd );  
-	
-		    // Test RFFT: 
+
+        // Test RFFT: 
 	/* Comparing contrast density with the 
 	   one obtained after FFT and inverse FFT */
   	#ifdef TEST_FT
 	CTR( FT_cd );  
 	#endif
+        //Free memory
+        free( cells );
+	    
+                    //Array of Structures FCells, size N^3 
+	fcells = ( struct FCell * )calloc( (size_t) PRM.NcTot, sizeof( struct FCell) );
+	if(fcells==NULL){ 
+            printf("Fcells structure not allocated\n");
+            exit(0);
+        }
+	//Power Spectrum
+	//Filling the k-space cells
+	FS_Grid( FT_cd );  
+		   
         //Free memory
         fftw_free( FT_cd );
         

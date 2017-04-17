@@ -222,7 +222,7 @@ int CTR( fftw_complex *FT_cd ){
     for(j=0;j<PRM.Nc;j++){
       for(k=0;k<PRM.Nc;k++){
 
-	       pos = k + PRM.Nc*(j + i*PRM.Nc);
+         pos = k + PRM.Nc*(j + i*PRM.Nc);
          in[pos][0] = FT_cd[pos][0];
          in[pos][1] = FT_cd[pos][1];   
 
