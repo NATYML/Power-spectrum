@@ -82,15 +82,16 @@ int main( int argc, char *argv[] ){
 	
 	//Assignment of mass 
  	double mt_part = Mass_assignment(  );
+        //Free memory
+        free( parts );
  	
 	//Density Contrast 
 	density_contrast(mt_part);
 	
 	//Associated field stored per cell
-	//write_DField( );
+	//write_DField( mt_part );
        
-        free( parts );
-	//FT contrast density
+        //FT contrast density
 	printf( "\n\n************************* Fourier transform ***************************\n\n" ); 
 
 		//Array of Structures FCells, size N^3 
@@ -99,6 +100,7 @@ int main( int argc, char *argv[] ){
 
 	//RTC( FT_cd );	
 	CTC( FT_cd );	
+        //Free memory
         free( cells );
 		
 	//Power Spectrum
@@ -111,7 +113,9 @@ int main( int argc, char *argv[] ){
   	#ifdef TEST_FT
 	CTR( FT_cd );  
 	#endif
-    
+        //Free memory
+        fftw_free( FT_cd );
+        
         //Mean of contrast density module  
 	double *mean;
         double kf = 2.0*M_PI/PRM.Lbox;
@@ -124,13 +128,13 @@ int main( int argc, char *argv[] ){
 
 	//Calculating the power spectrum
 	Modes_FS( mean );
+        //Free memory
+        free( fcells );
 	
 	//Out file
 	Write_PS( mean ); 
 	
 	//Free memory
-	fftw_free( FT_cd );
-	free( fcells );
 	free( mean );
 
 	//Time taken 

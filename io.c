@@ -445,12 +445,13 @@ return 0;
  RETURN:     0
 **************************************************************************/ 
 
-int write_DField( ){
+int write_DField( double mt_part ){
 
 
 	int n,m,l,N_cell; 
 	FILE *fp;
 	char filename[80];
+        double bck_den = mt_part/(PRM.Lbox*PRM.Lbox*PRM.Lbox);
 
 	//Create document to write out
 	sprintf(filename, "../output_files/DF_%d.txt", PRM.Nc);
@@ -470,7 +471,8 @@ int write_DField( ){
 			for ( l= 0; l< PRM.Nc; l++){
 				 N_cell = l+PRM.Nc*(m+PRM.Nc*n);
 				 //fprintf( fp, "%lf \n",cells[N_cell].den_con);
-				 fprintf( fp, "%lf %lf\n",cells[N_cell].mc,cells[N_cell].mngp);
+                                 //fprintf( fp, "%lf %lf\n", PRM.vcell*bck_den*( cells[N_cell].den_con +1.) ,cells[N_cell].mngp);
+				 fprintf( fp, "%lf \n", PRM.vcell*bck_den*( cells[N_cell].den_con +1.) );
 			}
 		}
 	} 
@@ -480,37 +482,6 @@ int write_DField( ){
 
 	return 0;
 }
-/*************************************************************************/
-int Write_FT(  ){
-  
-	FILE *fp;
-	int n, m, l, N_celda;
-
-	//Create document to write out
-	fp = fopen("../output_files/Test_FT/Fourier_transf.dat","w"); 
-
-	//Some parameters are stored
-	fprintf( fp, "%d %d %lf %lf %f\n", 
-		     PRM.Nc, PRM.Nbins, PRM.deltak, PRM.kmin, 1.0);
-
-	//FT is stored per shell
-	for ( n = 0; n < PRM.Nc; n++){
-		for ( m = 0; m < PRM.Nc; m++){
-			for ( l= 0; l< PRM.Nc; l++){
-				 N_celda = l+PRM.Nc*(m+PRM.Nc*n);
-				 fprintf( fp, "%lf %lf %lf %lf %lf\n",
-				 	fcells[N_celda].kx, fcells[N_celda].ky, fcells[N_celda].kz,
-					fcells[N_celda].r_dconk, fcells[N_celda].i_dconk );	 		
-
-			}
-		}
-	} 
-	
-	fclose(fp);
-
-	return 0;
-}
-
 /*************************************************************************
  NAME:       Write_PS
  FUNCTION:   Write output file with the Power Spectrum calculated

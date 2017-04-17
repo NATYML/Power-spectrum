@@ -64,7 +64,7 @@ int Dec_window(  double kx, double ky, double kz, double *deconv ){
  RETURN:     ERR                                                                                                                            
 **************************************************************************/
 
-double Deconv_Alias( int N_cell ){
+double Deconv_Alias( int N_cell, double kx, double ky, double kz ){
 
   double kn, ERR, fsin;
   //Nyquist Frequency                                                                                                                        
@@ -74,24 +74,24 @@ double Deconv_Alias( int N_cell ){
     ERR = 1.0;
   #endif
   #ifdef CIC
-    fsin = sin(0.5*M_PI*fcells[N_cell].kx/kn);
+    fsin = sin(0.5*M_PI*kx/kn);
     ERR = 1.0 - (2.0/3.0)*fsin*fsin;
 
-    fsin = sin(0.5*M_PI*fcells[N_cell].ky/kn);
+    fsin = sin(0.5*M_PI*ky/kn);
     ERR = ERR*(1.0 - (2.0/3.0)*fsin*fsin);
   
-    fsin = sin(0.5*M_PI*fcells[N_cell].kz/kn);
+    fsin = sin(0.5*M_PI*kz/kn);
     ERR = ERR*(1.0 - (2.0/3.0)*fsin*fsin);
   #endif 
 
   #ifdef TSC  
-    fsin = sin(0.5*M_PI*fcells[N_cell].kx/kn);                                                  
+    fsin = sin(0.5*M_PI*kx/kn);                                                  
     ERR = 1- fsin*fsin+ 2.*pow(fsin,4)/15.;
 
-    fsin = sin(0.5*M_PI*fcells[N_cell].ky/kn);
+    fsin = sin(0.5*M_PI*ky/kn);
     ERR = ERR*( 1- fsin*fsin+ 2.*pow(fsin,4)/15.); 
 
-    fsin = sin(0.5*M_PI*fcells[N_cell].kz/kn);       
+    fsin = sin(0.5*M_PI*kz/kn);       
     ERR = ERR*( 1- fsin*fsin+ 2.*pow(fsin,4)/15.);        
   #endif                                                                                                                                   
 
@@ -259,6 +259,7 @@ int CTR( fftw_complex *FT_cd ){
 int FS_Grid( fftw_complex *FT_cd ){
 
   int i,j,k,N_cell;
+  double kx, ky, kz;
   
   //int dumb = (floor(PRM.Nc/2)+1)*PRM.Nc*PRM.Nc;
 
@@ -272,31 +273,30 @@ int FS_Grid( fftw_complex *FT_cd ){
 		N_cell = k+PRM.Nc*(j+PRM.Nc*i);
 	        //Calculating kx
                 if (i<PRM.Nc/2)
-                    fcells[N_cell].kx = 2*i*M_PI/(1.0*PRM.Lbox);  
+                    kx = 2*i*M_PI/(1.0*PRM.Lbox);  
                 else
-                    fcells[N_cell].kx = 2*(-PRM.Nc+i)*M_PI/(1.0*PRM.Lbox);
+                    kx = 2*(-PRM.Nc+i)*M_PI/(1.0*PRM.Lbox);
                 //Calculating ky
                 if (j<PRM.Nc/2) 
-                    fcells[N_cell].ky = 2*j*M_PI/(1.0*PRM.Lbox);
+                    ky = 2*j*M_PI/(1.0*PRM.Lbox);
                 else
-                    fcells[N_cell].ky = 2*(-PRM.Nc+j)*M_PI/(1.0*PRM.Lbox);
+                    ky = 2*(-PRM.Nc+j)*M_PI/(1.0*PRM.Lbox);
                 //Calculating kz
                 if (k<PRM.Nc/2) 
-                    fcells[N_cell].kz = 2*k*M_PI/(1.0*PRM.Lbox); 
+                    kz = 2*k*M_PI/(1.0*PRM.Lbox); 
                 else
-                    fcells[N_cell].kz = 2*(-PRM.Nc+k)*M_PI/(1.0*PRM.Lbox); 
+                    kz = 2*(-PRM.Nc+k)*M_PI/(1.0*PRM.Lbox); 
                 
 		//Magnitud of k vector
-                fcells[N_cell].k = sqrt( fcells[N_cell].kx*fcells[N_cell].kx + 
-                                          fcells[N_cell].ky*fcells[N_cell].ky +
-                                          fcells[N_cell].kz*fcells[N_cell].kz );
+                fcells[N_cell].k = sqrt( kx*kx + ky*ky + kz*kz );
  
 		if ( fcells[N_cell].k > g_k_max ){ g_k_max =  fcells[N_cell].k;}
 
-                fcells[N_cell].r_dconk = FT_cd[N_cell][0];  
-                fcells[N_cell].i_dconk = FT_cd[N_cell][1]; 
-            	fcells[N_cell].pk = (fcells[N_cell].r_dconk*fcells[N_cell].r_dconk+ fcells[N_cell].i_dconk*fcells[N_cell].i_dconk);
-		fcells[N_cell].pk = fcells[N_cell].pk/(1.0*Deconv_Alias(N_cell)); 
+                //fcells[N_cell].r_dconk = FT_cd[N_cell][0];  
+                //fcells[N_cell].i_dconk = FT_cd[N_cell][1]; 
+                //fcells[N_cell].pk = (fcells[N_cell].r_dconk*fcells[N_cell].r_dconk+ fcells[N_cell].i_dconk*fcells[N_cell].i_dconk);
+            	fcells[N_cell].pk = ( FT_cd[N_cell][0]*FT_cd[N_cell][0]+ FT_cd[N_cell][1]*FT_cd[N_cell][1] );
+		fcells[N_cell].pk = fcells[N_cell].pk/(1.0*Deconv_Alias(N_cell,kx,ky,kz)); 
 	   
 	       }  
 	    } 

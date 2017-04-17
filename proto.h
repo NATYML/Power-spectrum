@@ -9,8 +9,7 @@ int read_ascci( char * );
 int read_binary( char * );
 int read_FOF_PART( char * );
 int read_HDF5( char * );
-int write_DField( );
-int Write_FT( );
+int write_DField( double );
 int Write_PS( double * );
 
 // Density map Module
@@ -24,7 +23,7 @@ int density_contrast(double );
 // Fourier Module 
 double Dec_Alia_appr( double );
 int Dec_window(  double, double, double, double * );
-double Deconv_Alias( int  );
+double Deconv_Alias( int , double, double ,double );
 int RTC( fftw_complex * );
 int CTC( fftw_complex * );
 int CTR( fftw_complex * );

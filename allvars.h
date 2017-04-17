@@ -35,7 +35,7 @@ extern struct Cell{
 	double xc;
 	double yc;
 	double zc;
-	double mc;
+	//double mc;
         //double mngp;
 	double den_con;
 
@@ -43,12 +43,12 @@ extern struct Cell{
 
 extern struct FCell{
 	
-	double kx;
-	double ky;
-	double kz;
+	//double kx;
+	//double ky;
+	//double kz;
 	double k;
-	double r_dconk;
-	double i_dconk;
+	//double r_dconk;
+	//double i_dconk;
         double pk;
 
 }*fcells;
@@ -94,13 +94,16 @@ extern struct gadget_header{
 #include<stdio.h>
 #include<math.h>
 #include<fftw3.h>
-#include "proto.h"
+#include <string.h>
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_statistics.h>
 #include <time.h>
 //#include "hdf5.h"
-//#include "/home/nataly/Programs/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
+// Asus
+///#include "/home/nataly/Programs/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
+// Store    
 #include "/home/nataly/local/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
+#include "proto.h"
 
 #endif 

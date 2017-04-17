@@ -179,7 +179,7 @@ double Mass_assignment(  ){
 		#endif 
 	
 		//Contribution to the cells mass to due to particle that falls in 
-		cells[index[0]].mc = cells[index[0]].mc + Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp;		
+		cells[index[0]].den_con = cells[index[0]].den_con + Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp;		
                 //printf("%lf\n",cells[index[0]].mc);
 		
 		temp = 0;
@@ -207,25 +207,20 @@ double Mass_assignment(  ){
 							
 							//Calculating position
 							pos = ( i0*PRM.Nc + j0 )*PRM.Nc + k0;
-							cells[pos].mc = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].mc;   					                                    
+							//cells[pos].mc = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].mc;   					                    
+                                                        cells[pos].den_con = Wx[p]*Wy[q]*Wz[r]*parts[i].mp + cells[pos].den_con;   					                                                                            
 							temp = temp +  Wx[p]*Wy[q]*Wz[r]*parts[i].mp;
 							//if (Wx[p]*Wy[q]*Wz[r]>0 ) printf(" %lf  \n",Wx[p]*Wy[q]*Wz[r] );   
 				   		}
 				}
 					
 		}
-			
-                //if( (parts[i].mp - temp) < 0 ){ printf("Problem: part id %d Mp %lf Mcells %lf Mass cc%lf\n",i,parts[i].mp,temp,cells[index[0]].mc);getchar(); }
-                double borr;
-                borr = Wx[CENTER]*Wy[CENTER]*Wz[CENTER]*parts[i].mp + temp;
-                if( fabs(parts[i].mp - borr) > 1e-4 ){ printf("More mass! \n"); getchar(); }
-		
 	}
 	
 	//Test for cloud in cell
 	#ifdef TEST_MASS 
 	mt_cells=0;
-        for( k=0; k<PRM.Nc*PRM.Nc*PRM.Nc;k++ ) mt_cells = mt_cells + cells[k].mc; 
+        for( k=0; k<PRM.Nc*PRM.Nc*PRM.Nc;k++ ) mt_cells = mt_cells + cells[k].den_con; 
  		printf("Cells total mass %lf \t Part total mass %lf \n\n", mt_cells, mt_part );
 		printf("Relative Error Mass cells %e\n",fabs(mt_cells-mt_part)/mt_part);	
 	#endif
@@ -255,10 +250,10 @@ int density_contrast( double mt_part ){
     //cells[i].den_con = (cells[i].mngp/PRM.vcell)/bck_den - 1.0;	
     // #endif 
     #ifdef CIC
-      cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	 
+      cells[i].den_con = (cells[i].den_con/PRM.vcell)/bck_den - 1.0;	 
     #endif  
     #ifdef TSC
-      cells[i].den_con = (cells[i].mc/PRM.vcell)/bck_den - 1.0;	 
+      cells[i].den_con = (cells[i].den_con/PRM.vcell)/bck_den - 1.0;	 
     #endif  
 
   } 
