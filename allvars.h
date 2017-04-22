@@ -103,7 +103,7 @@ extern struct gadget_header{
 // Asus
 ///#include "/home/nataly/Programs/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
 // Store    
-#include "/home/nataly/local/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
+#include "/scratch/nmateusl/local/src/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"
 #include "proto.h"
 
 #endif 
