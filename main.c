@@ -97,7 +97,9 @@ int main( int argc, char *argv[] ){
 	FT_cd = (fftw_complex *)fftw_malloc( sizeof(fftw_complex)*PRM.NcTot );
 
 	//RTC( FT_cd );	
-	CTC( FT_cd );	
+	CTC( FT_cd );
+	//Free memory
+        free( cells );
 
         // Test RFFT: 
 	/* Comparing contrast density with the 
@@ -105,9 +107,7 @@ int main( int argc, char *argv[] ){
   	#ifdef TEST_FT
 	CTR( FT_cd );  
 	#endif
-        //Free memory
-        free( cells );
-	    
+       	    
                     //Array of Structures FCells, size N^3 
 	fcells = ( struct FCell * )calloc( (size_t) PRM.NcTot, sizeof( struct FCell) );
 	if(fcells==NULL){ 
@@ -124,7 +124,7 @@ int main( int argc, char *argv[] ){
         //Mean of contrast density module  
 	double *mean;
         double kf = 2.0*M_PI/PRM.Lbox;
-        PRM.deltak = 0.5*kf;
+        PRM.deltak = kf;
         PRM.kmin = kf;//PRM.deltak;
 	PRM.Nbins = (int) ceil( g_k_max/PRM.deltak );
 	mean = (double *)calloc((size_t) PRM.Nbins,sizeof(double));

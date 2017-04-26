@@ -272,7 +272,8 @@ int read_FOF_PART( char *filename ){
    //Reading first sub_box
    sprintf(filename1,"%s_00000",filename); 
    FOFCube cube(filename1, true);  
-   j = 0;    
+   j = 0;
+   
    for( k=j; k< cube.npart(); k++ ){ 
     
          parts[k].xp = cube.posX(k);
@@ -308,6 +309,7 @@ int read_FOF_PART( char *filename ){
 
    }
    printf("Npart %ld\n",j);
+
  return 0;   
 }   
 /*************************************************************************
@@ -505,14 +507,14 @@ int Write_PS( double *mean ){
 
 	//Media is stored per shell
 	for ( n = 0; n < PRM.Nbins; n++){
-
+	  
 	        //k = PRM.kmin + (n+0.5)*PRM.deltak;
 	        k = PRM.kmin + n*PRM.deltak;
                 fprintf( fp, "%lf %lf\n", k ,mean[n] );
 		 
 	} 
-
+	
 	fclose(fp);
-
+	
 	return 0;
 }

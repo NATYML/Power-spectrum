@@ -4,7 +4,7 @@
 #.....................................
 # Number of divisions in one dimension
 # N^3 cells 
-N = 64
+N = 256
 #...............................
 #Length Box
 #L = 400
