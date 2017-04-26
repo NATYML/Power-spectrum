@@ -98,6 +98,7 @@ extern struct gadget_header{
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_statistics.h>
+#include <gsl/gsl_vector.h>
 #include <time.h>
 //#include "hdf5.h"
 // Asus
