@@ -2,6 +2,7 @@
 #OPT += -DHDF5
 #OPT += -DGADGET_BINARY
 OPT += -DASCCI
+OPT += -DTEMP
 #OPT += -DFOF_PART
 		# Mass scheme
 #OPT += -DNGP

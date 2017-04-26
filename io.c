@@ -309,8 +309,53 @@ int read_FOF_PART( char *filename ){
 
    }
    printf("Npart %ld\n",j);
+   
+    #ifdef TEMP
+    
+   //Ordering list, lowest to highest
+    gsl_vector *x_order;
+    x_order = gsl_vector_alloc( PRM.Npart );                                                                                        
+    long int *index;
+    index = calloc( PRM.Npart, sizeof(long int) );
+    
+    //Initializing In array                                                                                                                   
+    for ( j=0; j< PRM.Npart; j++ ){
+        //Storing x position
+        gsl_vector_set( x_order, j , parts[j].xp );  
+    }
+    
+    gsl_permutation * perm = gsl_permutation_alloc( PRM.Npart );
+    gsl_permutation * rank = gsl_permutation_alloc( PRM.Npart );
+    
+                //Sorting array: From lowest to highest
+    
+    /*The elements of Perm gives the index of xp
+    such that it is sorted. */
+    gsl_sort_vector_index( perm, x_order );
+    //Computes the inverse of the permutation perm
+    gsl_permutation_inverse( rank, perm );
+ 
+    //Index: array containing index xp ordering
+    //Way to get ordered xp array: part[index[j]].xp
+    for ( j = 0; j < PRM.Npart; j++){
+	    index[ (int)rank->data[j] ] = j;
+    }
+     
+    for ( j = 0; j < 50; j++){
+            printf( " %lf \n", parts.[ index[j] ].xp );
+    }
+    printf("Upper\n");
+    for ( j = PRM.Npart -50; j < PRM.Npart ; j++){
+            printf( " %lf \n", parts.[ index[j] ].xp );
+    }
 
- return 0;   
+    free(index);
+    
+    exit(0);
+    
+    #endif 
+
+    return 0;   
 }   
 /*************************************************************************
  NAME:       read_HDF5
