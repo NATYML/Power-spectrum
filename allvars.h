@@ -100,6 +100,7 @@ extern struct gadget_header{
 #include <gsl/gsl_statistics.h>
 #include <gsl/gsl_vector.h>
 #include <time.h>
+#include <algorithm>
 //#include "hdf5.h"
 // Asus
 ///#include "/home/nataly/Programs/FOFReaderLib-master/FOFReaderLib/FOFReaderLib.h"

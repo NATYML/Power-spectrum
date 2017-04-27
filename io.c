@@ -273,13 +273,36 @@ int read_FOF_PART( char *filename ){
    sprintf(filename1,"%s_00000",filename); 
    FOFCube cube(filename1, true);  
    j = 0;
+
+   #ifdef TEMP
    
+        char file[20];
+        int p;
+        FILE *pt[20];
+        
+	for ( p=0; p<20; p++ ){
+	       sprintf( file,"../ouputfiles/DEUS_2.6Gpc_1024_slices_%d.bin", (p+1) );
+               pt[p]  = fopen( file,"w" );
+        }  
+        // Saving Simulation parameters 
+        fwrite( &PRM.Lbox, sizeof(double), 1, pt[0] );  //Box Size
+        fwrite( &PRM.Npart, sizeof(long int), 1, pt[0] );  //Npart
+        
+    exit(0);    
+   #endif 
+
    for( k=j; k< cube.npart(); k++ ){ 
     
          parts[k].xp = cube.posX(k);
          parts[k].yp = cube.posY(k); 
          parts[k].zp = cube.posZ(k);            
 	 parts[k].mp = PRM.global_mass/1.0e10;
+         
+         #ifdef TEMP
+            
+         
+    
+        #endif 
         
    }   
    
@@ -310,51 +333,6 @@ int read_FOF_PART( char *filename ){
    }
    printf("Npart %ld\n",j);
    
-    #ifdef TEMP
-    
-   //Ordering list, lowest to highest
-    gsl_vector *x_order;
-    x_order = gsl_vector_alloc( PRM.Npart );                                                                                        
-    long int *index;
-    index = ( long int * )calloc( PRM.Npart, sizeof( long int ) );
-    
-    //Initializing In array                                                                                                                   
-    for ( j=0; j< PRM.Npart; j++ ){
-        //Storing x position
-        gsl_vector_set( x_order, j , parts[j].xp );  
-    }
-    
-    gsl_permutation * perm = gsl_permutation_alloc( PRM.Npart );
-    gsl_permutation * rank = gsl_permutation_alloc( PRM.Npart );
-    
-                //Sorting array: From lowest to highest
-    
-    /*The elements of Perm gives the index of xp
-    such that it is sorted. */
-    gsl_sort_vector_index( perm, x_order );
-    //Computes the inverse of the permutation perm
-    gsl_permutation_inverse( rank, perm );
- 
-    //Index: array containing index xp ordering
-    //Way to get ordered xp array: part[index[j]].xp
-    for ( j = 0; j < PRM.Npart; j++){
-	    index[ (int)rank->data[j] ] = j;
-    }
-     
-    for ( j = 0; j < 50; j++){
-            printf( " %lf \n", parts[ index[j] ].xp );
-    }
-    printf("Upper\n");
-    for ( j = PRM.Npart -50; j < PRM.Npart ; j++){
-            printf( " %lf \n", parts[ index[j] ].xp );
-    }
-
-    free(index);
-    
-    exit(0);
-    
-    #endif 
-
     return 0;   
 }   
 /*************************************************************************
